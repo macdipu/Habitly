@@ -25,17 +25,46 @@ class HabitDetailScreen extends StatelessWidget {
       child: Scaffold(
       appBar: AppBar(
         title: Obx(() => Text(controller.habit.value?.name ?? '')),
-        actions: [
-          PopupMenuButton<String>(
-            onSelected: (value) => _handleAction(context, controller, value),
-            itemBuilder: (context) => const [
-              PopupMenuItem(value: 'edit', child: Text('Edit')),
-              PopupMenuItem(value: 'archive', child: Text('Archive')),
-              PopupMenuItem(value: 'delete', child: Text('Delete')),
-            ],
-          ),
-        ],
       ),
+      // A visible action row, not just an overflow menu — Edit/Archive/
+      // Delete are the whole point of this screen, matching the design
+      // mockup's bottom action row rather than burying them a tap deeper.
+      bottomNavigationBar: Obx(() {
+        if (controller.habit.value == null) return const SizedBox.shrink();
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+            child: Row(
+              children: [
+                Expanded(
+                  child: _ActionButton(
+                    icon: Icons.edit_outlined,
+                    label: 'Edit',
+                    onTap: () => _handleAction(context, controller, 'edit'),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _ActionButton(
+                    icon: Icons.inventory_2_outlined,
+                    label: 'Archive',
+                    onTap: () => _handleAction(context, controller, 'archive'),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _ActionButton(
+                    icon: Icons.delete_outline,
+                    label: 'Delete',
+                    destructive: true,
+                    onTap: () => _handleAction(context, controller, 'delete'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      }),
       body: Obx(() {
         final habit = controller.habit.value;
         final stats = controller.stats.value;
@@ -178,6 +207,49 @@ class HabitDetailScreen extends StatelessWidget {
         }
         break;
     }
+  }
+}
+
+class _ActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final bool destructive;
+  final VoidCallback onTap;
+
+  const _ActionButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+    this.destructive = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = destructive ? context.error : context.onSurface;
+    final borderColor = destructive ? context.error.withValues(alpha: 0.4) : context.outlineVariant;
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 13),
+          decoration: BoxDecoration(
+            border: Border.all(color: borderColor),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 18, color: color),
+              const SizedBox(height: 4),
+              Text(label, style: context.labelMedium?.copyWith(color: color)),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

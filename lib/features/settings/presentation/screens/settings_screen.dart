@@ -2,6 +2,7 @@ import 'package:customer/core/domain/models/time_format_enum.dart';
 import 'package:customer/core/presentation/controllers/locale_controller.dart';
 import 'package:customer/core/presentation/controllers/theme_controller.dart';
 import 'package:customer/core/presentation/controllers/time_format_controller.dart';
+import 'package:customer/res/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -92,6 +93,15 @@ class SettingsScreen extends StatelessWidget {
                     )),
               ],
             ),
+          ),
+          const Divider(),
+          const _SectionLabel('Habits'),
+          ListTile(
+            leading: const Icon(Icons.checklist_outlined),
+            title: const Text('Manage habits'),
+            subtitle: const Text('Search, and view or restore archived habits'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () => Get.toNamed(AppRoutes.manageHabits),
           ),
           const Divider(),
           const _SectionLabel('Reminders & notifications'),

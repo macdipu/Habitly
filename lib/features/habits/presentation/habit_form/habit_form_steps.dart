@@ -22,11 +22,11 @@ class BasicsStep extends StatelessWidget {
           controller: controller.nameController,
           maxLength: 60,
           decoration: const InputDecoration(labelText: 'Habit name'),
-          onChanged: (_) => controller.currentStep.refresh(),
         ),
         TextField(
           controller: controller.descriptionController,
-          decoration: const InputDecoration(labelText: 'Description (optional)'),
+          decoration:
+              const InputDecoration(labelText: 'Description (optional)'),
         ),
         const SizedBox(height: 8),
         const Text('Type'),
@@ -53,7 +53,9 @@ class BasicsStep extends StatelessWidget {
                   child: CircleAvatar(
                     backgroundColor: Color(c),
                     radius: selected ? 18 : 14,
-                    child: selected ? const Icon(Icons.check, color: Colors.white, size: 16) : null,
+                    child: selected
+                        ? const Icon(Icons.check, color: Colors.white, size: 16)
+                        : null,
                   ),
                 );
               }).toList(),
@@ -100,7 +102,15 @@ class ScheduleStep extends StatelessWidget {
                   final iso = i + 1;
                   final selected = controller.weekdays.contains(iso);
                   return FilterChip(
-                    label: Text(const ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][i]),
+                    label: Text(const [
+                      'Mon',
+                      'Tue',
+                      'Wed',
+                      'Thu',
+                      'Fri',
+                      'Sat',
+                      'Sun'
+                    ][i]),
                     selected: selected,
                     onSelected: (value) {
                       if (value) {
@@ -136,7 +146,8 @@ class ScheduleStep extends StatelessWidget {
                     child: TextFormField(
                       initialValue: '${controller.intervalDays.value}',
                       keyboardType: TextInputType.number,
-                      onChanged: (v) => controller.intervalDays.value = int.tryParse(v) ?? 1,
+                      onChanged: (v) =>
+                          controller.intervalDays.value = int.tryParse(v) ?? 1,
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -148,7 +159,8 @@ class ScheduleStep extends StatelessWidget {
           }
         }),
         const SizedBox(height: 16),
-        Obx(() => Text(controller.schedulePreview, style: Theme.of(context).textTheme.bodyMedium)),
+        Obx(() => Text(controller.schedulePreview,
+            style: Theme.of(context).textTheme.bodyMedium)),
       ],
     );
   }
@@ -186,7 +198,8 @@ class GoalStep extends StatelessWidget {
             const SizedBox(height: 8),
             TextField(
               controller: controller.unitController,
-              decoration: const InputDecoration(labelText: 'Unit (e.g. glasses)'),
+              decoration:
+                  const InputDecoration(labelText: 'Unit (e.g. glasses)'),
             ),
           ],
         ],
@@ -241,12 +254,14 @@ class RemindersStep extends StatelessWidget {
                     leading: const Icon(Icons.alarm),
                     title: Text(Get.find<TimeFormatController>().formatTime(
                       draft.time,
-                      use24hFallback: MediaQuery.of(context).alwaysUse24HourFormat,
+                      use24hFallback:
+                          MediaQuery.of(context).alwaysUse24HourFormat,
                     )),
                     subtitle: TextFormField(
                       key: ValueKey('reminder-label-$index'),
                       initialValue: draft.label,
-                      decoration: const InputDecoration(hintText: 'Label (optional)'),
+                      decoration:
+                          const InputDecoration(hintText: 'Label (optional)'),
                       onChanged: (v) => controller.setReminderLabel(index, v),
                     ),
                     trailing: Row(
@@ -266,7 +281,8 @@ class RemindersStep extends StatelessWidget {
                             );
                             if (picked != null) {
                               final hh = picked.hour.toString().padLeft(2, '0');
-                              final mm = picked.minute.toString().padLeft(2, '0');
+                              final mm =
+                                  picked.minute.toString().padLeft(2, '0');
                               controller.setReminderTime(index, '$hh:$mm');
                             }
                           },

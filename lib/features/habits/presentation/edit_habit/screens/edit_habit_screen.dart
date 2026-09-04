@@ -30,14 +30,19 @@ class EditHabitScreen extends StatelessWidget {
               padding: const EdgeInsets.all(12),
               child: Text(
                 'Changes apply going forward. Your past check-ins are never changed.',
-                style: TextStyle(color: Theme.of(context).colorScheme.onSecondaryContainer),
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onSecondaryContainer),
               ),
             ),
             Expanded(
               child: Stepper(
+                // See CreateHabitScreen's identical key — Stepper does not
+                // reliably re-render a changed steps.length otherwise.
+                key: ValueKey(steps.length),
                 currentStep: controller.currentStep.value,
                 onStepContinue: () {
-                  final isLast = controller.currentStep.value == steps.length - 1;
+                  final isLast =
+                      controller.currentStep.value == steps.length - 1;
                   if (isLast) {
                     controller.submit();
                   } else {
@@ -46,18 +51,26 @@ class EditHabitScreen extends StatelessWidget {
                 },
                 onStepCancel: controller.previousStep,
                 controlsBuilder: (context, details) {
-                  final isLast = controller.currentStep.value == steps.length - 1;
+                  final isLast =
+                      controller.currentStep.value == steps.length - 1;
                   return Padding(
                     padding: const EdgeInsets.only(top: 16),
                     child: Row(
                       children: [
-                        FilledButton(
-                          onPressed: _canContinue(controller) ? details.onStepContinue : null,
-                          child: Text(isLast ? 'Save changes' : 'Next'),
-                        ),
+                        // Scoped to just this button — see
+                        // HabitFormController.nameText for why the whole
+                        // Stepper must not rebuild on every keystroke.
+                        Obx(() => FilledButton(
+                              onPressed: _canContinue(controller)
+                                  ? details.onStepContinue
+                                  : null,
+                              child: Text(isLast ? 'Save changes' : 'Next'),
+                            )),
                         if (controller.currentStep.value > 0) ...[
                           const SizedBox(width: 12),
-                          TextButton(onPressed: details.onStepCancel, child: const Text('Back')),
+                          TextButton(
+                              onPressed: details.onStepCancel,
+                              child: const Text('Back')),
                         ],
                       ],
                     ),
@@ -74,7 +87,8 @@ class EditHabitScreen extends StatelessWidget {
 
   bool _canContinue(EditHabitController controller) {
     if (controller.currentStep.value == 0) return controller.canContinueBasics;
-    if (controller.currentStep.value == 1) return controller.canContinueSchedule;
+    if (controller.currentStep.value == 1)
+      return controller.canContinueSchedule;
     return true;
   }
 
@@ -103,7 +117,9 @@ class EditHabitScreen extends StatelessWidget {
       Step(
         title: const Text('Reminders'),
         isActive: step >= controller.remindersStepIndex,
-        state: step > controller.remindersStepIndex ? StepState.complete : StepState.indexed,
+        state: step > controller.remindersStepIndex
+            ? StepState.complete
+            : StepState.indexed,
         content: RemindersStep(controller: controller),
       ),
       Step(
@@ -130,7 +146,8 @@ class _ReviewStep extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    CircleAvatar(backgroundColor: Color(controller.color.value)),
+                    CircleAvatar(
+                        backgroundColor: Color(controller.color.value)),
                     const SizedBox(width: 12),
                     Text(
                       controller.nameController.text,
@@ -142,7 +159,8 @@ class _ReviewStep extends StatelessWidget {
                 Text(controller.schedulePreview),
                 if (controller.needsGoalStep) ...[
                   const SizedBox(height: 8),
-                  Text('Target: ${controller.targetController.text} ${controller.unitController.text}'),
+                  Text(
+                      'Target: ${controller.targetController.text} ${controller.unitController.text}'),
                 ],
                 const SizedBox(height: 8),
                 Text(

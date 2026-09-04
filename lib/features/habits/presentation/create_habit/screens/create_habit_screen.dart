@@ -18,6 +18,12 @@ class CreateHabitScreen extends StatelessWidget {
       body: Obx(() {
         final steps = _stepsFor(controller);
         return Stepper(
+          // Flutter's Stepper does not reliably re-render when `steps`
+          // changes LENGTH via a normal widget update (verified: the Goal
+          // step computed correctly on every rebuild but never appeared on
+          // screen). Keying on the count forces a full remount instead of
+          // an incremental update whenever a step is added/removed.
+          key: ValueKey(steps.length),
           currentStep: controller.currentStep.value,
           onStepContinue: () {
             final isLast = controller.currentStep.value == steps.length - 1;
@@ -34,13 +40,21 @@ class CreateHabitScreen extends StatelessWidget {
               padding: const EdgeInsets.only(top: 16),
               child: Row(
                 children: [
-                  FilledButton(
-                    onPressed: _canContinue(controller) ? details.onStepContinue : null,
-                    child: Text(isLast ? 'Create habit' : 'Next'),
-                  ),
+                  // Scoped to just this button: rebuilding on every
+                  // keystroke must never touch the Stepper/step content
+                  // above (a focused TextField sits in there) — see
+                  // HabitFormController.nameText for why.
+                  Obx(() => FilledButton(
+                        onPressed: _canContinue(controller)
+                            ? details.onStepContinue
+                            : null,
+                        child: Text(isLast ? 'Create habit' : 'Next'),
+                      )),
                   if (controller.currentStep.value > 0) ...[
                     const SizedBox(width: 12),
-                    TextButton(onPressed: details.onStepCancel, child: const Text('Back')),
+                    TextButton(
+                        onPressed: details.onStepCancel,
+                        child: const Text('Back')),
                   ],
                 ],
               ),
@@ -54,7 +68,8 @@ class CreateHabitScreen extends StatelessWidget {
 
   bool _canContinue(CreateHabitController controller) {
     if (controller.currentStep.value == 0) return controller.canContinueBasics;
-    if (controller.currentStep.value == 1) return controller.canContinueSchedule;
+    if (controller.currentStep.value == 1)
+      return controller.canContinueSchedule;
     return true;
   }
 
@@ -83,7 +98,9 @@ class CreateHabitScreen extends StatelessWidget {
       Step(
         title: const Text('Reminders'),
         isActive: step >= controller.remindersStepIndex,
-        state: step > controller.remindersStepIndex ? StepState.complete : StepState.indexed,
+        state: step > controller.remindersStepIndex
+            ? StepState.complete
+            : StepState.indexed,
         content: RemindersStep(controller: controller),
       ),
       Step(
@@ -110,7 +127,8 @@ class _ReviewStep extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    CircleAvatar(backgroundColor: Color(controller.color.value)),
+                    CircleAvatar(
+                        backgroundColor: Color(controller.color.value)),
                     const SizedBox(width: 12),
                     Text(
                       controller.nameController.text,
@@ -122,7 +140,8 @@ class _ReviewStep extends StatelessWidget {
                 Text(controller.schedulePreview),
                 if (controller.needsGoalStep) ...[
                   const SizedBox(height: 8),
-                  Text('Target: ${controller.targetController.text} ${controller.unitController.text}'),
+                  Text(
+                      'Target: ${controller.targetController.text} ${controller.unitController.text}'),
                 ],
                 const SizedBox(height: 8),
                 Text(

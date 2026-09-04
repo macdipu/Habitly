@@ -8,7 +8,14 @@ import 'package:intl/intl.dart';
 
 /// Available icon keys — kept small deliberately; extend alongside
 /// `TodayHabitCard._iconFor` when the real icon picker (S07) is built.
-const kHabitIconOptions = ['check', 'water_drop', 'book', 'fitness', 'sleep', 'smoking'];
+const kHabitIconOptions = [
+  'check',
+  'water_drop',
+  'book',
+  'fitness',
+  'sleep',
+  'smoking'
+];
 
 const kHabitColorOptions = <int>[
   0xFF2E7D32, // green
@@ -39,6 +46,18 @@ abstract class HabitFormController extends BaseController {
   final nameController = TextEditingController();
   final descriptionController = TextEditingController();
 
+  /// Mirrors [nameController.text] as an observable so `canContinueBasics`
+  /// can be watched by a scoped `Obx` (just the Next/Save button) without
+  /// forcing whatever wraps it to rebuild on every keystroke — rebuilding
+  /// an ancestor of a focused, actively-typed-in `TextField` synchronously
+  /// from within its own `onChanged` corrupts the element tree (a real
+  /// crash previously here: `'_dependents.isEmpty': is not true` on the
+  /// next navigation, from a `currentStep.refresh()` hack in `BasicsStep`
+  /// that rebuilt the whole Stepper — including the focused name field —
+  /// on every keystroke). Never write to this directly; it's kept in sync
+  /// by [onInit]'s listener.
+  final nameText = ''.obs;
+
   final Rx<HabitType> type = HabitType.binary.obs;
   final RxString icon = kHabitIconOptions.first.obs;
   final RxInt color = kHabitColorOptions.first.obs;
@@ -60,7 +79,7 @@ abstract class HabitFormController extends BaseController {
 
   final RxInt currentStep = 0.obs;
 
-  bool get canContinueBasics => nameController.text.trim().isNotEmpty;
+  bool get canContinueBasics => nameText.value.trim().isNotEmpty;
 
   bool get canContinueSchedule =>
       scheduleMode.value != ScheduleMode.weekdays || weekdays.isNotEmpty;
@@ -78,7 +97,8 @@ abstract class HabitFormController extends BaseController {
         return 'Every day, starting $dateLabel';
       case ScheduleMode.weekdays:
         if (weekdays.isEmpty) return 'Pick at least one day';
-        final names = (weekdays.toList()..sort()).map(_weekdayShortName).join(', ');
+        final names =
+            (weekdays.toList()..sort()).map(_weekdayShortName).join(', ');
         return '$names, starting $dateLabel';
       case ScheduleMode.timesPerWeek:
         return '${weeklyTarget.value}x per week, starting $dateLabel';
@@ -129,7 +149,16 @@ abstract class HabitFormController extends BaseController {
   Future<void> submit();
 
   @override
+  void onInit() {
+    super.onInit();
+    nameController.addListener(_syncNameText);
+  }
+
+  void _syncNameText() => nameText.value = nameController.text;
+
+  @override
   void onClose() {
+    nameController.removeListener(_syncNameText);
     nameController.dispose();
     descriptionController.dispose();
     targetController.dispose();
