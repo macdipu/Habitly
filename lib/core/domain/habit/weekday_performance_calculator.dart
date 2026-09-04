@@ -1,5 +1,6 @@
 import 'adherence_calculator.dart';
-import 'habit_occurrence.dart';
+import 'habit_enums.dart';
+import 'local_date.dart';
 
 /// One weekday's adherence within a range — [isoWeekday] 1=Monday..7=Sunday.
 /// [adherencePercent] is null ("not enough data") when the habit was never
@@ -16,10 +17,16 @@ class WeekdayAdherence {
 /// [AdherenceCalculator]'s exact success/eligibility definition per weekday
 /// bucket, so a 100% Monday means the same thing a 100% overall adherence
 /// does.
+///
+/// Takes `(date, state)` records rather than the feature layer's
+/// `HabitOccurrence` — this file lives in `core/domain/`, which CLAUDE.md
+/// forbids from importing `features/` entities. Callers map their
+/// occurrence list to records before calling in.
 class WeekdayPerformanceCalculator {
   const WeekdayPerformanceCalculator();
 
-  List<WeekdayAdherence> byWeekday(List<HabitOccurrence> occurrences) {
+  List<WeekdayAdherence> byWeekday(
+      List<({LocalDate date, OccurrenceState state})> occurrences) {
     const calculator = AdherenceCalculator();
     return List.generate(7, (i) {
       final isoWeekday = i + 1;

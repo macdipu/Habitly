@@ -1,5 +1,7 @@
 import 'package:customer/core/presentation/theme/theme_extensions.dart';
+import 'package:customer/features/habits/presentation/widgets/adherence_trend_chart.dart';
 import 'package:customer/features/habits/presentation/widgets/occurrence_heatmap.dart';
+import 'package:customer/features/habits/presentation/widgets/weekday_performance_chart.dart';
 import 'package:customer/res/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -142,6 +144,14 @@ class HabitDetailScreen extends StatelessWidget {
               Text('Last 90 days', style: context.titleMedium),
               const SizedBox(height: 12),
               OccurrenceHeatmap(occurrences: stats.occurrences),
+              const SizedBox(height: 28),
+              Text('By day of week', style: context.titleMedium),
+              const SizedBox(height: 12),
+              WeekdayPerformanceChart(occurrences: stats.occurrences),
+              const SizedBox(height: 28),
+              Text('Weekly trend', style: context.titleMedium),
+              const SizedBox(height: 12),
+              AdherenceTrendChart(occurrences: stats.occurrences),
             ],
           ],
         ).animate().fadeIn(duration: 250.ms);
