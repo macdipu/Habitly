@@ -1,3 +1,5 @@
+import 'package:customer/features/calendar/presentation/screens/calendar_screen.dart';
+import 'package:customer/features/insights/presentation/screens/insights_screen.dart';
 import 'package:customer/features/settings/presentation/screens/settings_screen.dart';
 import 'package:customer/features/today/presentation/screens/today_screen.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +18,8 @@ class AppShell extends StatelessWidget {
             index: controller.currentIndex.value,
             children: const [
               TodayScreen(),
-              _PlaceholderScreen(label: 'Calendar'),
-              _PlaceholderScreen(label: 'Insights'),
+              CalendarScreen(),
+              InsightsScreen(),
               SettingsScreen(),
             ],
           )),
@@ -53,27 +55,6 @@ class AppShell extends StatelessWidget {
               label: 'Settings',
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-/// Calendar/Insights/Settings land in later phases (docs/ARCHITECTURE.md §9,
-/// Phase 3/4) — this keeps the 4-tab IA navigable meanwhile.
-class _PlaceholderScreen extends StatelessWidget {
-  const _PlaceholderScreen({required this.label});
-
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(label)),
-      body: Center(
-        child: Text(
-          '$label — coming soon',
-          style: Theme.of(context).textTheme.headlineSmall,
         ),
       ),
     );

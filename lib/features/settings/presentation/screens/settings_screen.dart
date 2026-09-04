@@ -1,4 +1,3 @@
-import 'package:customer/core/domain/models/theme_mode_enum.dart';
 import 'package:customer/core/presentation/controllers/locale_controller.dart';
 import 'package:customer/core/presentation/controllers/theme_controller.dart';
 import 'package:flutter/material.dart';

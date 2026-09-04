@@ -1,5 +1,4 @@
 import 'package:customer/core/domain/habit/habit_enums.dart';
-import 'package:customer/core/domain/habit/local_date.dart';
 import 'package:customer/features/habits/domain/entity/habit_occurrence.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';

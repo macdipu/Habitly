@@ -134,16 +134,32 @@ separate, simpler flattening pass over `CheckIn` joined with `Habit` (FR-62).
 
 ## 9. Build/implementation order
 
-Follows BRD §20 phases, adapted to this repo:
+Follows BRD §20 phases, adapted to this repo. Status as of the last build pass
+(`flutter analyze` clean, unit tests green):
 
-- **Phase 0** (this pass): dependencies, Drift schema + migrations, recurrence/streak
-  engine + unit tests, theme/nav wiring, docs (this file, `SRS.md`, `DATA_MODEL.md`).
-- **Phase 1**: onboarding, Today (empty + dashboard), create/edit/archive habit,
-  binary check-in.
-- **Phase 2**: reminders end-to-end (schedule, permission flow, reconciliation).
-- **Phase 3**: calendar, day detail, insights.
-- **Phase 4**: backup/restore/export, delete-all.
-- **Phase 5**: accessibility pass, edge-case hardening, release QA per BRD §19.
+- **Phase 0 — done**: dependencies, Drift schema + migrations, recurrence/streak/
+  adherence/week-quota/calendar-aggregation engine + unit tests, theme/nav wiring,
+  docs (this file, `SRS.md`, `DATA_MODEL.md`).
+- **Phase 1 — mostly done**: Today (empty + dashboard, check-in/undo/skip, quick-entry
+  sheet), Create Habit (Basics/Schedule/Goal/Review stepper), archive/delete wired
+  from Habit Detail. **Not done**: onboarding (S02/S03 — app currently boots
+  straight to the shell), Edit Habit (S13 — menu item shows a "coming soon"
+  snackbar).
+- **Phase 2 — not started**: reminders (S10), permission flow, notification
+  scheduling/reconciliation. Create Habit has no reminders step yet.
+- **Phase 3 — mostly done**: Habit Detail (S12, with a 90-day heatmap), Calendar
+  month view (S14) aggregating all active habits (no per-habit filter yet), Day
+  Detail (S15, historical check-in edit/undo/skip), Insights overview (S16, ranking
+  + most-consistent + 7/30/90d range). **Not done**: a dedicated per-habit Insights
+  screen (S17) beyond what Habit Detail already shows; weekday-performance/monthly
+  trend charts.
+- **Phase 4 — not started**: backup/restore/export, delete-all-data.
+- **Phase 5 — not started**: accessibility pass, edge-case hardening (timezone/DST/
+  clock-change reconciliation beyond what `GetHabitOccurrencesUseCase`'s real-clock
+  "today" already gives), release QA per BRD §19.
+
+Search/filter/archive-management (S18/S19) and Settings sub-screens (S21-S24)
+beyond the single consolidated Settings tab are also outstanding.
 
 Each phase should leave `flutter analyze` clean and add unit tests for any new pure
 logic before moving to the next phase.

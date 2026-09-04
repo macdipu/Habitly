@@ -9,4 +9,5 @@ class AppRoutes {
   // Habitly
   static const String createHabit = '/habits/create';
   static const String habitDetail = '/habits/detail';
+  static const String dayDetail = '/calendar/day';
 }

@@ -3,6 +3,8 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 
 import '../../app/shell/app_shell.dart';
 import '../../app/shell/app_shell_binding.dart';
+import '../../features/calendar/presentation/bindings/day_detail_binding.dart';
+import '../../features/calendar/presentation/day_detail/screens/day_detail_screen.dart';
 import '../../features/habits/presentation/bindings/create_habit_binding.dart';
 import '../../features/habits/presentation/bindings/habit_detail_binding.dart';
 import '../../features/habits/presentation/create_habit/screens/create_habit_screen.dart';
@@ -34,6 +36,11 @@ class AppPages {
       name: AppRoutes.habitDetail,
       page: () => const HabitDetailScreen(),
       binding: HabitDetailBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.dayDetail,
+      page: () => const DayDetailScreen(),
+      binding: DayDetailBinding(),
     ),
   ];
 }
