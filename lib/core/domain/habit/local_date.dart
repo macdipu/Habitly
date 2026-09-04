@@ -22,6 +22,11 @@ class LocalDate implements Comparable<LocalDate> {
 
   DateTime _asUtc() => DateTime.utc(year, month, day);
 
+  /// UTC-based [DateTime] representing this calendar date at midnight.
+  /// Safe for display formatting; use [addDays]/[differenceInDays] rather
+  /// than doing arithmetic on this directly in local time.
+  DateTime toDateTime() => _asUtc();
+
   /// ISO weekday: 1 = Monday .. 7 = Sunday.
   int get weekday => _asUtc().weekday;
 

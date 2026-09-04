@@ -45,7 +45,7 @@ class CreateHabitController extends BaseController {
   final RxInt intervalDays = 2.obs;
   final Rx<LocalDate> startDate = LocalDate.fromDateTime(DateTime.now()).obs;
 
-  final RxDouble target = 8.obs;
+  final RxDouble target = 8.0.obs;
   final RxString unit = ''.obs;
 
   final RxInt currentStep = 0.obs;

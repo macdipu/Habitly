@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../features/authentication/presentation/login/screens/login_screen.dart';
+import '../../res/routes/app_routes.dart';
 
 class NavigationService {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -19,13 +19,8 @@ class NavigationService {
   }
 
   static Future<dynamic> navigateToHome() async {
-    Navigator.pushAndRemoveUntil(
-      navigatorKey.currentContext!,
-      MaterialPageRoute(
-        builder: (context) => const LoginScreen(),
-      ),
-      (Route<dynamic> route) => false,
-    );
+    return navigatorKey.currentState!
+        .pushNamedAndRemoveUntil(AppRoutes.appShell, (Route<dynamic> route) => false);
   }
 
   static dynamic goBack([dynamic popValue]) {
@@ -45,6 +40,6 @@ class NavigationService {
   }
 
   static Future<void> logoutAndNavigateToLoginScreen() async {
-    Get.offAll(() => LoginScreen());
+    Get.offAllNamed(AppRoutes.appShell);
   }
 }
