@@ -30,7 +30,7 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
 
-  await dotenv.load(fileName: '.env');
+  await dotenv.load();
 
   // TODO: Enable Firebase for production:
   // await Firebase.initializeApp();

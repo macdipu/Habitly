@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:customer/core/presentation/theme/theme_extensions.dart';
 import 'package:customer/features/habits/domain/entity/habit_insight.dart';
 import 'package:customer/res/routes/app_routes.dart';
@@ -71,7 +73,7 @@ class InsightsScreen extends StatelessWidget {
                       onTap: () async {
                         final changed =
                             await Get.toNamed(AppRoutes.habitDetail, arguments: insight.habit.id);
-                        if (changed == true) controller.load();
+                        if (changed == true) unawaited(controller.load());
                       },
                     ),
                   ],

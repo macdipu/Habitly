@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:customer/core/domain/repositories/app_settings_repository.dart';
 import 'package:customer/res/routes/app_routes.dart';
 import 'package:customer/services/notifications/habit_notification_service.dart';
@@ -43,6 +45,6 @@ class OnboardingPreferencesController extends GetxController {
     await _settingsRepository.setStartOfWeek(startOfWeek.value);
     await _settingsRepository.setOnboardingComplete(true);
     isSaving.value = false;
-    Get.offAllNamed(AppRoutes.appShell);
+    unawaited(Get.offAllNamed(AppRoutes.appShell));
   }
 }

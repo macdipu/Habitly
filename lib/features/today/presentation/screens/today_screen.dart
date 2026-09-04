@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:customer/core/domain/habit/habit_enums.dart';
@@ -42,7 +43,7 @@ class TodayScreen extends StatelessWidget {
 
   Future<void> _createHabit(TodayController controller) async {
     final created = await Get.toNamed(AppRoutes.createHabit);
-    if (created == true) controller.loadToday();
+    if (created == true) unawaited(controller.loadToday());
   }
 }
 
@@ -56,7 +57,7 @@ class _EmptyToday extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
       children: [
-        _TodayHeader(dueCount: 0, doneCount: 0),
+        const _TodayHeader(dueCount: 0, doneCount: 0),
         const SizedBox(height: 36),
         Column(
           children: [
@@ -128,7 +129,7 @@ class _TodayDashboard extends StatelessWidget {
       item: item,
       onTap: () async {
         final changed = await Get.toNamed(AppRoutes.habitDetail, arguments: item.habit.id);
-        if (changed == true) controller.loadToday();
+        if (changed == true) unawaited(controller.loadToday());
       },
       onStatusTap: () => _handleStatusTap(context, item),
       onUndo: () => controller.undo(item),

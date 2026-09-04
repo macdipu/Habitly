@@ -10,52 +10,52 @@ void main() {
 
   group('ReminderScheduler.nextDueDate', () {
     test('returns the from-date itself when it is already due', () {
-      final rule = HabitScheduleRule(
+      const rule = HabitScheduleRule(
         mode: ScheduleMode.daily,
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
       expect(scheduler.nextDueDate(rule, const LocalDate(2026, 3, 1)), const LocalDate(2026, 3, 1));
     });
 
     test('skips forward to the next matching weekday', () {
-      final rule = HabitScheduleRule(
+      const rule = HabitScheduleRule(
         mode: ScheduleMode.weekdays,
-        weekdays: const {1, 5}, // Mon, Fri
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        weekdays: {1, 5}, // Mon, Fri
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
       // 2026-01-06 is a Tuesday -> next Mon/Fri is Fri 2026-01-09.
       expect(scheduler.nextDueDate(rule, const LocalDate(2026, 1, 6)), const LocalDate(2026, 1, 9));
     });
 
     test('returns null once an end date has passed', () {
-      final rule = HabitScheduleRule(
+      const rule = HabitScheduleRule(
         mode: ScheduleMode.daily,
-        startDate: const LocalDate(2026, 1, 1),
-        endDate: const LocalDate(2026, 1, 10),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        startDate: LocalDate(2026, 1, 1),
+        endDate: LocalDate(2026, 1, 10),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
       expect(scheduler.nextDueDate(rule, const LocalDate(2026, 2, 1)), isNull);
     });
 
     test('respects interval mode', () {
-      final rule = HabitScheduleRule(
+      const rule = HabitScheduleRule(
         mode: ScheduleMode.interval,
         intervalDays: 3,
-        anchorDate: const LocalDate(2026, 1, 1),
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        anchorDate: LocalDate(2026, 1, 1),
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
       expect(scheduler.nextDueDate(rule, const LocalDate(2026, 1, 3)), const LocalDate(2026, 1, 4));
     });
   });
 
   group('ReminderScheduler.nextFireTime', () {
-    final dailyRule = HabitScheduleRule(
+    const dailyRule = HabitScheduleRule(
       mode: ScheduleMode.daily,
-      startDate: const LocalDate(2026, 1, 1),
-      effectiveFrom: const LocalDate(2026, 1, 1),
+      startDate: LocalDate(2026, 1, 1),
+      effectiveFrom: LocalDate(2026, 1, 1),
     );
 
     test('uses the reminder time as-is when quiet hours are disabled', () {
@@ -93,11 +93,11 @@ void main() {
     });
 
     test('no next occurrence at all -> null regardless of quiet hours', () {
-      final endedRule = HabitScheduleRule(
+      const endedRule = HabitScheduleRule(
         mode: ScheduleMode.daily,
-        startDate: const LocalDate(2026, 1, 1),
-        endDate: const LocalDate(2026, 1, 5),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        startDate: LocalDate(2026, 1, 1),
+        endDate: LocalDate(2026, 1, 5),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
       final result = scheduler.nextFireTime(
         rule: endedRule,

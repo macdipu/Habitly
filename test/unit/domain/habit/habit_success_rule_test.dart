@@ -27,7 +27,7 @@ void main() {
     });
 
     test('count/duration with no target: any logged value completes', () {
-      const rule = HabitSuccessRule(type: HabitType.count, target: null);
+      const rule = HabitSuccessRule(type: HabitType.count);
       expect(rule.evaluate(1), CheckInStatus.completed);
       expect(rule.evaluate(0), CheckInStatus.missed);
     });

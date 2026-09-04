@@ -38,13 +38,13 @@ void main() {
       const habitId = 'daily-1';
       repo.habits[habitId] = buildHabit(habitId, HabitType.binary);
       repo.schedules[habitId] = [
-        HabitScheduleEntity(
+        const HabitScheduleEntity(
           id: 's1',
           habitId: habitId,
           rule: HabitScheduleRule(
             mode: ScheduleMode.daily,
-            startDate: const LocalDate(2026, 1, 10),
-            effectiveFrom: const LocalDate(2026, 1, 10),
+            startDate: LocalDate(2026, 1, 10),
+            effectiveFrom: LocalDate(2026, 1, 10),
           ),
         ),
       ];
@@ -60,10 +60,10 @@ void main() {
       }
 
       final useCase = GetHabitStatsUseCase(repo);
-      final result = await useCase(GetHabitStatsParams(
+      final result = await useCase(const GetHabitStatsParams(
         habitId: habitId,
-        from: const LocalDate(2026, 1, 10),
-        to: const LocalDate(2026, 1, 18),
+        from: LocalDate(2026, 1, 10),
+        to: LocalDate(2026, 1, 18),
       ));
 
       final stats = result.fold((l) => throw StateError('unexpected failure: $l'), (r) => r);
@@ -79,10 +79,10 @@ void main() {
       const habitId = 'weekly-1';
       repo.habits[habitId] = buildHabit(habitId, HabitType.binary);
       repo.schedules[habitId] = [
-        HabitScheduleEntity(
+        const HabitScheduleEntity(
           id: 's1',
           habitId: habitId,
-          rule: const HabitScheduleRule(
+          rule: HabitScheduleRule(
             mode: ScheduleMode.timesPerWeek,
             weeklyTarget: 3,
             startDate: LocalDate(2026, 1, 5),
@@ -103,10 +103,10 @@ void main() {
       }
 
       final useCase = GetHabitStatsUseCase(repo);
-      final result = await useCase(GetHabitStatsParams(
+      final result = await useCase(const GetHabitStatsParams(
         habitId: habitId,
-        from: const LocalDate(2026, 1, 5),
-        to: const LocalDate(2026, 1, 18),
+        from: LocalDate(2026, 1, 5),
+        to: LocalDate(2026, 1, 18),
       ));
 
       final stats = result.fold((l) => throw StateError('unexpected failure: $l'), (r) => r);

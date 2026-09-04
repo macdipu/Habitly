@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:customer/core/domain/habit/calendar_day_aggregator.dart';
 import 'package:customer/core/domain/habit/local_date.dart';
 import 'package:customer/core/presentation/theme/theme_extensions.dart';
@@ -103,7 +105,7 @@ class _MonthGrid extends StatelessWidget {
                 isToday: isToday,
                 onTap: () async {
                   final changed = await Get.toNamed(AppRoutes.dayDetail, arguments: date);
-                  if (changed == true) controller.load();
+                  if (changed == true) unawaited(controller.load());
                 },
               );
             },

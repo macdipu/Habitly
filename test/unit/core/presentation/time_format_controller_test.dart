@@ -14,16 +14,16 @@ void main() {
     test('h12 preference always shows 12h with AM/PM regardless of device default', () {
       final controller = TimeFormatController();
       controller.format.value = AppTimeFormat.h12;
-      expect(controller.formatTime('00:00', use24hFallback: true), '12:00 AM');
-      expect(controller.formatTime('08:05', use24hFallback: true), '8:05 AM');
-      expect(controller.formatTime('12:00', use24hFallback: true), '12:00 PM');
-      expect(controller.formatTime('20:05', use24hFallback: true), '8:05 PM');
+      expect(controller.formatTime('00:00'), '12:00 AM');
+      expect(controller.formatTime('08:05'), '8:05 AM');
+      expect(controller.formatTime('12:00'), '12:00 PM');
+      expect(controller.formatTime('20:05'), '8:05 PM');
     });
 
     test('system preference defers to the device default', () {
       final controller = TimeFormatController();
       controller.format.value = AppTimeFormat.system;
-      expect(controller.formatTime('20:05', use24hFallback: true), '20:05');
+      expect(controller.formatTime('20:05'), '20:05');
       expect(controller.formatTime('20:05', use24hFallback: false), '8:05 PM');
     });
   });

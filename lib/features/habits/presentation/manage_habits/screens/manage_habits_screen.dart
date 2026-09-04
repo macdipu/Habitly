@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:customer/core/domain/habit/habit_enums.dart';
 import 'package:customer/core/presentation/theme/theme_extensions.dart';
 import 'package:customer/features/habits/domain/entity/habit_entity.dart';
@@ -77,7 +79,7 @@ class ManageHabitsScreen extends StatelessWidget {
                     onTap: () async {
                       final changed =
                           await Get.toNamed(AppRoutes.habitDetail, arguments: habits[index].id);
-                      if (changed == true) controller.load();
+                      if (changed == true) unawaited(controller.load());
                     },
                   ),
                 ),

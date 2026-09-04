@@ -6,7 +6,6 @@ import 'package:customer/app/flavours/app_config.dart';
 import 'package:customer/res/routes/app_routes.dart';
 import 'package:customer/res/strings/app_translations.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart' as getx;
 import 'package:logger/logger.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -35,11 +34,7 @@ class ApiClient {
       ..interceptors.add(
         PrettyDioLogger(
           requestHeader: true,
-          request: true,
           requestBody: true,
-          responseBody: true,
-          error: true,
-          enabled: kDebugMode,
         ),
       );
     setToken();

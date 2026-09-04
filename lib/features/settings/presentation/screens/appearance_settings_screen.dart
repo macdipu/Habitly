@@ -20,27 +20,25 @@ class AppearanceSettingsScreen extends StatelessWidget {
       appBar: AppBar(title: const Text('Appearance')),
       body: ListView(
         children: [
-          Obx(() => Column(
-                children: [
-                  RadioListTile<ThemeMode>(
-                    title: const Text('System'),
-                    value: ThemeMode.system,
-                    groupValue: themeController.themeMode,
-                    onChanged: (v) => v == null ? null : themeController.changeThemeMode(v),
-                  ),
-                  RadioListTile<ThemeMode>(
-                    title: const Text('Light'),
-                    value: ThemeMode.light,
-                    groupValue: themeController.themeMode,
-                    onChanged: (v) => v == null ? null : themeController.changeThemeMode(v),
-                  ),
-                  RadioListTile<ThemeMode>(
-                    title: const Text('Dark'),
-                    value: ThemeMode.dark,
-                    groupValue: themeController.themeMode,
-                    onChanged: (v) => v == null ? null : themeController.changeThemeMode(v),
-                  ),
-                ],
+          Obx(() => RadioGroup<ThemeMode>(
+                groupValue: themeController.themeMode,
+                onChanged: (v) => v == null ? null : themeController.changeThemeMode(v),
+                child: const Column(
+                  children: [
+                    RadioListTile<ThemeMode>(
+                      title: Text('System'),
+                      value: ThemeMode.system,
+                    ),
+                    RadioListTile<ThemeMode>(
+                      title: Text('Light'),
+                      value: ThemeMode.light,
+                    ),
+                    RadioListTile<ThemeMode>(
+                      title: Text('Dark'),
+                      value: ThemeMode.dark,
+                    ),
+                  ],
+                ),
               )),
           const Divider(),
           Obx(() => SwitchListTile(

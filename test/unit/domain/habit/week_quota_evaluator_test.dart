@@ -32,7 +32,7 @@ void main() {
         e(const LocalDate(2026, 1, 12), c),
         e(const LocalDate(2026, 1, 13), c),
       ];
-      final today = const LocalDate(2026, 1, 13);
+      const today = LocalDate(2026, 1, 13);
       final buckets = evaluator.bucketByWeek(entries, today);
       expect(buckets.length, 2);
       expect(buckets[0].meetsQuota(3), isTrue);
@@ -53,7 +53,7 @@ void main() {
         e(const LocalDate(2026, 1, 10), m),
         e(const LocalDate(2026, 1, 11), m),
       ];
-      final today = const LocalDate(2026, 1, 20);
+      const today = LocalDate(2026, 1, 20);
       final buckets = evaluator.bucketByWeek(entries, today);
       expect(evaluator.currentStreakInWeeks(buckets, 3), 0);
     });
@@ -69,7 +69,7 @@ void main() {
       }
       // Week of Jan 19: misses quota.
       entries.add(e(const LocalDate(2026, 1, 19), m));
-      final today = const LocalDate(2026, 1, 26);
+      const today = LocalDate(2026, 1, 26);
       final buckets = evaluator.bucketByWeek(entries, today);
       expect(evaluator.bestStreakInWeeks(buckets, 3), 2);
     });
@@ -81,7 +81,7 @@ void main() {
         e(const LocalDate(2026, 1, 7), c),
         e(const LocalDate(2026, 1, 8), pending),
       ];
-      final today = const LocalDate(2026, 1, 8);
+      const today = LocalDate(2026, 1, 8);
       final buckets = evaluator.bucketByWeek(entries, today);
       expect(evaluator.currentStreakInWeeks(buckets, 3), 1);
     });

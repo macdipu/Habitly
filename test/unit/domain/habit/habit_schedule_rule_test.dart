@@ -6,10 +6,10 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('HabitScheduleRule', () {
     test('daily mode schedules every day from start, none before it', () {
-      final rule = HabitScheduleRule(
+      const rule = HabitScheduleRule(
         mode: ScheduleMode.daily,
-        startDate: const LocalDate(2026, 1, 5),
-        effectiveFrom: const LocalDate(2026, 1, 5),
+        startDate: LocalDate(2026, 1, 5),
+        effectiveFrom: LocalDate(2026, 1, 5),
       );
       expect(rule.isScheduledOn(const LocalDate(2026, 1, 4)), isFalse);
       expect(rule.isScheduledOn(const LocalDate(2026, 1, 5)), isTrue);
@@ -17,22 +17,22 @@ void main() {
     });
 
     test('daily mode respects an end date', () {
-      final rule = HabitScheduleRule(
+      const rule = HabitScheduleRule(
         mode: ScheduleMode.daily,
-        startDate: const LocalDate(2026, 1, 1),
-        endDate: const LocalDate(2026, 1, 10),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        startDate: LocalDate(2026, 1, 1),
+        endDate: LocalDate(2026, 1, 10),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
       expect(rule.isScheduledOn(const LocalDate(2026, 1, 10)), isTrue);
       expect(rule.isScheduledOn(const LocalDate(2026, 1, 11)), isFalse);
     });
 
     test('weekdays mode only matches selected ISO weekdays', () {
-      final rule = HabitScheduleRule(
+      const rule = HabitScheduleRule(
         mode: ScheduleMode.weekdays,
-        weekdays: const {1, 3, 5}, // Mon, Wed, Fri
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        weekdays: {1, 3, 5}, // Mon, Wed, Fri
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
       expect(rule.isScheduledOn(const LocalDate(2026, 1, 5)), isTrue); // Mon
       expect(rule.isScheduledOn(const LocalDate(2026, 1, 6)), isFalse); // Tue
@@ -40,12 +40,12 @@ void main() {
     });
 
     test('interval mode fires every N days from the anchor, across a year boundary', () {
-      final rule = HabitScheduleRule(
+      const rule = HabitScheduleRule(
         mode: ScheduleMode.interval,
         intervalDays: 3,
-        anchorDate: const LocalDate(2025, 12, 30),
-        startDate: const LocalDate(2025, 12, 30),
-        effectiveFrom: const LocalDate(2025, 12, 30),
+        anchorDate: LocalDate(2025, 12, 30),
+        startDate: LocalDate(2025, 12, 30),
+        effectiveFrom: LocalDate(2025, 12, 30),
       );
       expect(rule.isScheduledOn(const LocalDate(2025, 12, 30)), isTrue);
       expect(rule.isScheduledOn(const LocalDate(2026, 1, 1)), isFalse);
@@ -54,22 +54,22 @@ void main() {
     });
 
     test('interval mode never matches before its anchor', () {
-      final rule = HabitScheduleRule(
+      const rule = HabitScheduleRule(
         mode: ScheduleMode.interval,
         intervalDays: 2,
-        anchorDate: const LocalDate(2026, 1, 10),
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        anchorDate: LocalDate(2026, 1, 10),
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
       expect(rule.isScheduledOn(const LocalDate(2026, 1, 8)), isFalse);
     });
 
     test('timesPerWeek mode treats every in-range day as a candidate', () {
-      final rule = HabitScheduleRule(
+      const rule = HabitScheduleRule(
         mode: ScheduleMode.timesPerWeek,
         weeklyTarget: 3,
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
       for (var i = 0; i < 14; i++) {
         expect(rule.isScheduledOn(const LocalDate(2026, 1, 1).addDays(i)), isTrue);
@@ -79,79 +79,79 @@ void main() {
 
   group('HabitScheduleRule.hasSameShapeAs', () {
     test('daily rules always match regardless of timing fields', () {
-      final a = HabitScheduleRule(
+      const a = HabitScheduleRule(
         mode: ScheduleMode.daily,
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
-      final b = HabitScheduleRule(
+      const b = HabitScheduleRule(
         mode: ScheduleMode.daily,
-        startDate: const LocalDate(2026, 6, 1),
-        effectiveFrom: const LocalDate(2026, 6, 1),
+        startDate: LocalDate(2026, 6, 1),
+        effectiveFrom: LocalDate(2026, 6, 1),
       );
       expect(a.hasSameShapeAs(b), isTrue);
     });
 
     test('weekdays rules compare the day set, order-independent', () {
-      final a = HabitScheduleRule(
+      const a = HabitScheduleRule(
         mode: ScheduleMode.weekdays,
-        weekdays: const {1, 3, 5},
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        weekdays: {1, 3, 5},
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
-      final same = HabitScheduleRule(
+      const same = HabitScheduleRule(
         mode: ScheduleMode.weekdays,
-        weekdays: const {5, 3, 1},
-        startDate: const LocalDate(2026, 3, 1),
-        effectiveFrom: const LocalDate(2026, 3, 1),
+        weekdays: {5, 3, 1},
+        startDate: LocalDate(2026, 3, 1),
+        effectiveFrom: LocalDate(2026, 3, 1),
       );
-      final different = HabitScheduleRule(
+      const different = HabitScheduleRule(
         mode: ScheduleMode.weekdays,
-        weekdays: const {1, 3},
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        weekdays: {1, 3},
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
       expect(a.hasSameShapeAs(same), isTrue);
       expect(a.hasSameShapeAs(different), isFalse);
     });
 
     test('interval rules compare intervalDays only, not the anchor', () {
-      final a = HabitScheduleRule(
+      const a = HabitScheduleRule(
         mode: ScheduleMode.interval,
         intervalDays: 3,
-        anchorDate: const LocalDate(2026, 1, 1),
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        anchorDate: LocalDate(2026, 1, 1),
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
-      final sameIntervalDifferentAnchor = HabitScheduleRule(
+      const sameIntervalDifferentAnchor = HabitScheduleRule(
         mode: ScheduleMode.interval,
         intervalDays: 3,
-        anchorDate: const LocalDate(2026, 5, 1),
-        startDate: const LocalDate(2026, 5, 1),
-        effectiveFrom: const LocalDate(2026, 5, 1),
+        anchorDate: LocalDate(2026, 5, 1),
+        startDate: LocalDate(2026, 5, 1),
+        effectiveFrom: LocalDate(2026, 5, 1),
       );
-      final differentInterval = HabitScheduleRule(
+      const differentInterval = HabitScheduleRule(
         mode: ScheduleMode.interval,
         intervalDays: 4,
-        anchorDate: const LocalDate(2026, 1, 1),
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        anchorDate: LocalDate(2026, 1, 1),
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
       expect(a.hasSameShapeAs(sameIntervalDifferentAnchor), isTrue);
       expect(a.hasSameShapeAs(differentInterval), isFalse);
     });
 
     test('a mode change is always a shape change', () {
-      final daily = HabitScheduleRule(
+      const daily = HabitScheduleRule(
         mode: ScheduleMode.daily,
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
-      final weekdays = HabitScheduleRule(
+      const weekdays = HabitScheduleRule(
         mode: ScheduleMode.weekdays,
-        weekdays: const {1},
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        weekdays: {1},
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
       expect(daily.hasSameShapeAs(weekdays), isFalse);
     });
@@ -159,17 +159,17 @@ void main() {
 
   group('HabitScheduleTimeline', () {
     test('a schedule edit only affects occurrences on/after effectiveFrom', () {
-      final original = HabitScheduleRule(
+      const original = HabitScheduleRule(
         mode: ScheduleMode.weekdays,
-        weekdays: const {1, 2, 3, 4, 5}, // Mon-Fri
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        weekdays: {1, 2, 3, 4, 5}, // Mon-Fri
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
-      final edited = HabitScheduleRule(
+      const edited = HabitScheduleRule(
         mode: ScheduleMode.weekdays,
-        weekdays: const {6, 7}, // Sat-Sun only, from Feb 1
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 2, 1),
+        weekdays: {6, 7}, // Sat-Sun only, from Feb 1
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 2, 1),
       );
       final timeline = HabitScheduleTimeline([original, edited]);
 
@@ -182,10 +182,10 @@ void main() {
     });
 
     test('occurrencesBetween is bounded to the requested range', () {
-      final rule = HabitScheduleRule(
+      const rule = HabitScheduleRule(
         mode: ScheduleMode.daily,
-        startDate: const LocalDate(2026, 1, 1),
-        effectiveFrom: const LocalDate(2026, 1, 1),
+        startDate: LocalDate(2026, 1, 1),
+        effectiveFrom: LocalDate(2026, 1, 1),
       );
       final occurrences = HabitScheduleTimeline([rule])
           .occurrencesBetween(const LocalDate(2026, 1, 1), const LocalDate(2026, 1, 5));

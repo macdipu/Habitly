@@ -4,7 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 /// Newsreader (serif) for display/headline — the calm, editorial voice for
 /// "Today", habit names, big numbers. Manrope (sans) for everything else.
 class AppTextTheme {
-  static final TextTheme _base = const TextTheme(
+  static const TextTheme _base = TextTheme(
     displayLarge: TextStyle(fontSize: 57, fontWeight: FontWeight.w500, letterSpacing: -0.25, height: 64 / 57),
     displayMedium: TextStyle(fontSize: 45, fontWeight: FontWeight.w500, height: 52 / 45),
     displaySmall: TextStyle(fontSize: 36, fontWeight: FontWeight.w600, height: 44 / 36),

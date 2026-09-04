@@ -31,14 +31,14 @@ void main() {
           ),
         ],
         schedules: [
-          HabitScheduleEntity(
+          const HabitScheduleEntity(
             id: 's1',
             habitId: 'h1',
             rule: HabitScheduleRule(
               mode: ScheduleMode.weekdays,
-              weekdays: const {1, 3, 5},
-              startDate: const LocalDate(2026, 1, 1),
-              effectiveFrom: const LocalDate(2026, 1, 1),
+              weekdays: {1, 3, 5},
+              startDate: LocalDate(2026, 1, 1),
+              effectiveFrom: LocalDate(2026, 1, 1),
             ),
           ),
         ],

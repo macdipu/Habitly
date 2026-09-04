@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:customer/core/presentation/theme/theme_extensions.dart';
 import 'package:customer/features/habits/presentation/widgets/adherence_trend_chart.dart';
 import 'package:customer/features/habits/presentation/widgets/occurrence_heatmap.dart';
@@ -170,7 +172,7 @@ class HabitDetailScreen extends StatelessWidget {
         final changed = await Get.toNamed(AppRoutes.editHabit, arguments: controller.habitId);
         if (changed == true) {
           controller.changed.value = true;
-          controller.load();
+          unawaited(controller.load());
         }
         break;
       case 'archive':

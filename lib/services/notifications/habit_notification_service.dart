@@ -43,7 +43,6 @@ class HabitNotificationService implements NotificationScheduler {
       _channelId,
       _channelName,
       description: _channelDescription,
-      importance: Importance.defaultImportance,
     );
     await _plugin
         .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
@@ -132,8 +131,6 @@ class HabitNotificationService implements NotificationScheduler {
           _channelId,
           _channelName,
           channelDescription: _channelDescription,
-          importance: Importance.defaultImportance,
-          priority: Priority.defaultPriority,
         ),
         iOS: DarwinNotificationDetails(),
       ),

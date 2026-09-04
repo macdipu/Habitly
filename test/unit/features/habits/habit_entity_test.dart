@@ -3,7 +3,7 @@ import 'package:customer/features/habits/domain/entity/habit_entity.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  final now = DateTime.utc(2026, 1, 1);
+  final now = DateTime.utc(2026);
 
   HabitEntity countHabit() => HabitEntity(
         id: 'h1',

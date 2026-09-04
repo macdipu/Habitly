@@ -61,7 +61,7 @@ class GetHabitStatsUseCase extends UseCaseWithParams<HabitStats, GetHabitStatsPa
 
     if (latestMode == ScheduleMode.timesPerWeek) {
       final weeklyTarget = schedules.last.rule.weeklyTarget ?? 1;
-      final evaluator = const WeekQuotaEvaluator();
+      const evaluator = WeekQuotaEvaluator();
       final entries = occurrences
           .where((o) => o.state != OccurrenceState.notScheduled)
           .map((o) => MapEntry(o.date, o.state))

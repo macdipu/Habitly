@@ -11,7 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../features/habits/fake_habit_repository.dart';
 
 void main() {
-  final now = DateTime.utc(2026, 1, 1);
+  final now = DateTime.utc(2026);
   late RestoreService restoreService;
 
   setUp(() {

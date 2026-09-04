@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:customer/res/routes/app_routes.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -72,11 +74,11 @@ class DataBackupSection extends StatelessWidget {
     if (path == null) return;
 
     if (!context.mounted) return;
-    showDialog(
+    unawaited(showDialog<void>(
       context: context,
       barrierDismissible: false,
       builder: (_) => const Center(child: CircularProgressIndicator()),
-    );
+    ));
     final validation = await controller.validateFile(path);
     if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
     if (!context.mounted) return;
@@ -120,7 +122,7 @@ class DataBackupSection extends StatelessWidget {
       // The entire dataset just changed out from under every already-loaded
       // controller (Today/Calendar/Insights) — route back through Splash so
       // the shell rebuilds fresh rather than show stale cached lists.
-      Get.offAllNamed(AppRoutes.splash);
+      unawaited(Get.offAllNamed(AppRoutes.splash));
     }
   }
 
@@ -161,7 +163,7 @@ class DataBackupSection extends StatelessWidget {
 
     final success = await controller.deleteAllData();
     if (success) {
-      Get.offAllNamed(AppRoutes.splash);
+      unawaited(Get.offAllNamed(AppRoutes.splash));
     }
   }
 }

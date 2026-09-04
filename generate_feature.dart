@@ -1,3 +1,8 @@
+// A standalone dev CLI, run via `dart generate_feature.dart` — its whole
+// job is terminal output, so `print` here isn't the "production code" the
+// analyzer's `avoid_print` warns about.
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 
 const _dartReservedWords = {
@@ -462,7 +467,7 @@ String toPascalCase(String input) {
   return input
       .split('_')
       .map((word) => word.isEmpty ? '' : word[0].toUpperCase() + word.substring(1).toLowerCase())
-      .join('');
+      .join();
 }
 
 String toCamelCase(String input) {

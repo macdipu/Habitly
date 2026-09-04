@@ -43,7 +43,7 @@ class SplashController extends GetxController {
       loadingTimer.cancel();
 
       if (onboardingComplete) {
-        Get.offAllNamed(AppRoutes.appShell);
+        unawaited(Get.offAllNamed(AppRoutes.appShell));
         // A reminder tap can cold-start the app from fully terminated —
         // route into that habit only after the shell route is settled, so
         // this deep link is never stomped by the shell's own navigation
@@ -51,10 +51,10 @@ class SplashController extends GetxController {
         final launchHabitId =
             await Get.find<HabitNotificationService>().getLaunchHabitId();
         if (launchHabitId != null) {
-          Get.toNamed(AppRoutes.habitDetail, arguments: launchHabitId);
+          unawaited(Get.toNamed(AppRoutes.habitDetail, arguments: launchHabitId));
         }
       } else {
-        Get.offAllNamed(AppRoutes.onboardingWelcome);
+        unawaited(Get.offAllNamed(AppRoutes.onboardingWelcome));
       }
     } catch (e) {
       loadingTimer.cancel();

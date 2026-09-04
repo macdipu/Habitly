@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../data/repositories/app_settings_repository_impl.dart';
@@ -19,7 +21,7 @@ class LocaleController extends GetxController {
       final saved = await _settingsRepository.getLocale();
       final code = saved ?? 'en';
       currentLangCode.value = code;
-      Get.updateLocale(Locale(code));
+      unawaited(Get.updateLocale(Locale(code)));
     } catch (e) {
       debugPrint('Error loading locale: $e');
     }
@@ -30,7 +32,7 @@ class LocaleController extends GetxController {
       final newCode = currentLangCode.value == 'bn' ? 'en' : 'bn';
       await _settingsRepository.setLocale(newCode);
       currentLangCode.value = newCode;
-      Get.updateLocale(Locale(newCode));
+      unawaited(Get.updateLocale(Locale(newCode)));
     } catch (e) {
       debugPrint('Error toggling locale: $e');
     }
