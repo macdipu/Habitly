@@ -1,3 +1,4 @@
+import 'package:customer/features/today/presentation/screens/today_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'app_shell_controller.dart';
@@ -10,7 +11,15 @@ class AppShell extends StatelessWidget {
     final controller = Get.find<AppShellController>();
 
     return Scaffold(
-      body: Obx(() => _buildBody(controller.currentIndex.value)),
+      body: Obx(() => IndexedStack(
+            index: controller.currentIndex.value,
+            children: const [
+              TodayScreen(),
+              _PlaceholderScreen(label: 'Calendar'),
+              _PlaceholderScreen(label: 'Insights'),
+              _PlaceholderScreen(label: 'Settings'),
+            ],
+          )),
       bottomNavigationBar: Obx(
         () => BottomNavigationBar(
           currentIndex: controller.currentIndex.value,
@@ -23,40 +32,34 @@ class AppShell extends StatelessWidget {
           unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500),
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'Home',
+              icon: Icon(Icons.today_outlined),
+              activeIcon: Icon(Icons.today),
+              label: 'Today',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.explore_outlined),
-              activeIcon: Icon(Icons.explore),
-              label: 'Explore',
+              icon: Icon(Icons.calendar_month_outlined),
+              activeIcon: Icon(Icons.calendar_month),
+              label: 'Calendar',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.account_circle_outlined),
-              activeIcon: Icon(Icons.account_circle),
-              label: 'Account',
+              icon: Icon(Icons.insights_outlined),
+              activeIcon: Icon(Icons.insights),
+              label: 'Insights',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings_outlined),
+              activeIcon: Icon(Icons.settings),
+              label: 'Settings',
             ),
           ],
         ),
       ),
     );
   }
-
-  Widget _buildBody(int index) {
-    switch (index) {
-      case 0:
-        return const _PlaceholderScreen(label: 'Home');
-      case 1:
-        return const _PlaceholderScreen(label: 'Explore');
-      case 2:
-        return const _PlaceholderScreen(label: 'Account');
-      default:
-        return const _PlaceholderScreen(label: 'Home');
-    }
-  }
 }
 
+/// Calendar/Insights/Settings land in later phases (docs/ARCHITECTURE.md §9,
+/// Phase 3/4) — this keeps the 4-tab IA navigable meanwhile.
 class _PlaceholderScreen extends StatelessWidget {
   const _PlaceholderScreen({required this.label});
 
@@ -64,10 +67,13 @@ class _PlaceholderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        label,
-        style: Theme.of(context).textTheme.headlineMedium,
+    return Scaffold(
+      appBar: AppBar(title: Text(label)),
+      body: Center(
+        child: Text(
+          '$label — coming soon',
+          style: Theme.of(context).textTheme.headlineSmall,
+        ),
       ),
     );
   }

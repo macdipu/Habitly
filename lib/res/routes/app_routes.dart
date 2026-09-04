@@ -6,4 +6,6 @@ class AppRoutes {
   static const String resetPin = '/reset_pin';
   static const String resetPinSuccess = '/reset_pin_success';
 
+  // Habitly
+  static const String createHabit = '/habits/create';
 }
