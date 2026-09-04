@@ -84,11 +84,28 @@ lib/
 ```
 
 ## Known TODOs (do before production)
-- [ ] Enable Firebase (`app_flavour.dart` TODO comment)
-- [ ] Add `google-services.json` / `GoogleService-Info.plist`
-- [ ] Replace `flutter_secure_storage` stub calls with actual secure token storage
-- [ ] Write unit tests for all UseCases and repository implementations
-- [ ] Add integration tests for critical flows (login, navigation)
-- [ ] Configure CI/CD pipeline (GitHub Actions or Fastlane)
-- [ ] Add SSL/TLS certificate pinning to `ApiClient`
-- [ ] Set up crash reporting (Firebase Crashlytics)
+- [ ] Enable Firebase + crash reporting (`app_flavour.dart` TODO comment) —
+      blocked on a Firebase project + `google-services.json` /
+      `GoogleService-Info.plist` only the project owner can create.
+- [x] `flutter_secure_storage` stub calls — moot for Habitly: there is no
+      login/token flow (BRD, no accounts), and the unused
+      `SecureStorageService` stub was deleted as dead code. `ApiClient`'s
+      JWT plumbing stays dormant, not hardened, until it's wired to a real
+      feature — see `docs/ARCHITECTURE.md` §11/§12.
+- [ ] Unit tests for all UseCases/repository implementations — solid
+      coverage exists (100+ tests across domain/usecase/service layers) but
+      not literally every one; still a real gap.
+- [ ] Integration/widget tests for critical flows — only unit tests exist;
+      every flow (onboarding, create/edit habit, check-in, backup/restore)
+      has been verified live on-device repeatedly this build, not via
+      automated widget tests. (No login flow to test — Habitly has none.)
+- [x] CI/CD — `.github/workflows/ci.yml` (analyze + test + debug build on
+      every push/PR) and `.github/workflows/release.yml` (signed release
+      build + GitHub Release + optional Play upload on a version tag) both
+      exist. `android/key.properties`/`*.jks`/`*.keystore` are gitignored —
+      never commit real signing secrets.
+- [ ] SSL/TLS certificate pinning on `ApiClient` — deliberately deferred,
+      not forgotten: `ApiClient` has zero callers in `lib/features/` (see
+      `docs/ARCHITECTURE.md` §11). Pinning a client that never makes a
+      request is theater; add it only once `ApiClient` is actually wired to
+      a real endpoint.

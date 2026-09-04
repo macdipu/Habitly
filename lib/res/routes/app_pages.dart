@@ -18,6 +18,11 @@ import '../../features/onboarding/presentation/bindings/splash_binding.dart';
 import '../../features/onboarding/presentation/preferences/screens/onboarding_preferences_screen.dart';
 import '../../features/onboarding/presentation/splash/screens/splash_screen.dart';
 import '../../features/onboarding/presentation/welcome/screens/welcome_screen.dart';
+import '../../features/settings/presentation/screens/appearance_settings_screen.dart';
+import '../../features/settings/presentation/screens/calendar_settings_screen.dart';
+import '../../features/settings/presentation/screens/data_backup_screen.dart';
+import '../../features/settings/presentation/screens/notification_settings_screen.dart';
+import '../../features/settings/presentation/screens/privacy_about_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -75,6 +80,29 @@ class AppPages {
       name: AppRoutes.dayDetail,
       page: () => const DayDetailScreen(),
       binding: DayDetailBinding(),
+    ),
+    // Settings sub-screens (S21/S22/S23/S25) — no bindings needed, they
+    // read the shell-scoped SettingsController and the app-lifetime
+    // Theme/Locale/TimeFormat controllers via Get.find.
+    GetPage(
+      name: AppRoutes.appearanceSettings,
+      page: () => const AppearanceSettingsScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.calendarSettings,
+      page: () => const CalendarSettingsScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.notificationSettings,
+      page: () => const NotificationSettingsScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.dataBackupSettings,
+      page: () => const DataBackupScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.privacyAbout,
+      page: () => const PrivacyAboutScreen(),
     ),
   ];
 }

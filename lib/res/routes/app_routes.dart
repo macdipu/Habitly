@@ -15,4 +15,12 @@ class AppRoutes {
   static const String editHabit = '/habits/edit';
   static const String manageHabits = '/habits/manage';
   static const String dayDetail = '/calendar/day';
+
+  // Settings sub-screens (S21/S22/S23/S25) — the main Settings tab (S20) is
+  // a home screen of rows navigating into these.
+  static const String appearanceSettings = '/settings/appearance';
+  static const String calendarSettings = '/settings/calendar';
+  static const String notificationSettings = '/settings/notifications';
+  static const String dataBackupSettings = '/settings/data-backup';
+  static const String privacyAbout = '/settings/privacy-about';
 }

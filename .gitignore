@@ -47,3 +47,10 @@ app.*.map.json
 # FVM Version Cache
 .fvm/
 .env
+
+# Android release signing — never commit the keystore or its passwords.
+# CI materializes key.properties from a secret for the length of the job
+# only (see .github/workflows/release.yml); it must never exist in git.
+android/key.properties
+*.jks
+*.keystore
