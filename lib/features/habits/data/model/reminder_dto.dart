@@ -38,4 +38,24 @@ class ReminderDto {
       weekdays: Value(_formatWeekdays(entity.weekdays)),
     );
   }
+
+  static Map<String, dynamic> toJson(ReminderEntity entity) => {
+        'id': entity.id,
+        'habitId': entity.habitId,
+        'time': entity.time,
+        'label': entity.label,
+        'enabled': entity.enabled,
+        'weekdays': entity.weekdays?.toList(),
+      };
+
+  static ReminderEntity fromJson(Map<String, dynamic> json) => ReminderEntity(
+        id: json['id'] as String,
+        habitId: json['habitId'] as String,
+        time: json['time'] as String,
+        label: json['label'] as String?,
+        enabled: json['enabled'] as bool? ?? true,
+        weekdays: json['weekdays'] == null
+            ? null
+            : (json['weekdays'] as List).map((e) => e as int).toSet(),
+      );
 }

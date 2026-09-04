@@ -36,6 +36,9 @@ dependencies:
   path: ^1.9.1
   uuid: ^4.5.1
 
+  # Backup/export (Habitly)
+  crypto: ^3.0.6
+
   # Logging / Utilities
   logger: ^2.7.0
   dartz: ^0.10.1

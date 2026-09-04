@@ -122,4 +122,41 @@ class FakeHabitRepository implements HabitRepository {
     checkIns.remove(_checkInKey(habitId, localDate));
     return const Right(null);
   }
+
+  @override
+  ResultVoid deleteAllData() async {
+    habits.clear();
+    schedules.clear();
+    reminders.clear();
+    checkIns.clear();
+    return const Right(null);
+  }
+
+  @override
+  ResultVoid replaceAllData({
+    required List<HabitEntity> habits,
+    required List<HabitScheduleEntity> schedules,
+    required List<ReminderEntity> reminders,
+    required List<CheckInEntity> checkIns,
+  }) async {
+    this.habits
+      ..clear()
+      ..addEntries(habits.map((h) => MapEntry(h.id, h)));
+    this.schedules
+      ..clear()
+      ..addAll(schedules.fold<Map<String, List<HabitScheduleEntity>>>({}, (map, s) {
+        map.putIfAbsent(s.habitId, () => []).add(s);
+        return map;
+      }));
+    this.reminders
+      ..clear()
+      ..addAll(reminders.fold<Map<String, List<ReminderEntity>>>({}, (map, r) {
+        map.putIfAbsent(r.habitId, () => []).add(r);
+        return map;
+      }));
+    this.checkIns
+      ..clear()
+      ..addEntries(checkIns.map((c) => MapEntry(_checkInKey(c.habitId, c.localDate), c)));
+    return const Right(null);
+  }
 }

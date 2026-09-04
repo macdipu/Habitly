@@ -183,7 +183,20 @@ Follows BRD §20 phases, adapted to this repo. Status as of the last build pass
   + most-consistent + 7/30/90d range). **Not done**: a dedicated per-habit Insights
   screen (S17) beyond what Habit Detail already shows; weekday-performance/monthly
   trend charts.
-- **Phase 4 — not started**: backup/restore/export, delete-all-data.
+- **Phase 4 — done**: `lib/services/backup/` — `BackupBundle` (spans multiple
+  features' entities, so lives in `services/` not `core/domain`, same reasoning
+  as `ReminderReconciler`) + `BackupCodec` (pure JSON encode/decode/checksum,
+  unit-tested for round-trip equality and tamper detection — BRD §19.1) +
+  `BackupService` (build/export/share, never mutates on create) +
+  `RestoreService` (validate → user-confirmed summary → best-effort pre-restore
+  safety snapshot → `HabitRepository.replaceAllData` in one transaction) +
+  `CsvExportService`. New repository methods `deleteAllData`/`replaceAllData`.
+  Surfaced from Settings' Data & Backup section: Create/Restore/Export CSV/
+  Delete All (typed "DELETE" confirmation, BRD §S26). Restore and delete-all
+  both route back through Splash afterward (`Get.offAllNamed(AppRoutes.splash)`)
+  so Today/Calendar/Insights controllers rebuild fresh instead of showing
+  stale cached lists — they're kept alive in the shell's `IndexedStack` and
+  won't otherwise notice the dataset changed under them.
 - **Phase 5 — not started**: accessibility pass, edge-case hardening (timezone/DST/
   clock-change reconciliation beyond what `GetHabitOccurrencesUseCase`'s real-clock
   "today" already gives), release QA per BRD §19.
@@ -193,3 +206,46 @@ beyond the single consolidated Settings tab are also outstanding.
 
 Each phase should leave `flutter analyze` clean and add unit tests for any new pure
 logic before moving to the next phase.
+
+## 10. Real-device verification (Android emulator)
+
+Static analysis and 105 unit tests were passing before the app was ever actually
+launched. Running it end-to-end on a real Android emulator (onboarding → create
+habit with reminders → check in → Habit Detail → Settings) surfaced four real bugs
+none of the above caught:
+
+1. **`AppDatabase` constructed twice** — `app_flavour.dart` used
+   `Get.lazyPut(..., fenix: true)` for app-lifetime singletons (database,
+   repository, notification services). GetX's default smart management disposes
+   `lazyPut` registrations once no route references them, and `fenix` just means
+   "recreate lazily next time" — so once onboarding's routes were cleared via
+   `Get.offAllNamed`, the next `Get.find<AppDatabase>()` built a **second** Drift
+   instance with its own SQLite connection to the same file. Drift's own runtime
+   warning caught it. Fixed: `Get.put(..., permanent: true)` for every app-lifetime
+   singleton in `_initialize()` — `lazyPut`/`fenix` stays correct for per-screen
+   controllers (Today/Calendar/.../Create/Edit), which *should* be disposed.
+2. **Today never reloaded after creating a habit** — `Get.toNamed(AppRoutes.createHabit)`
+   (both the empty-state CTA and the FAB) wasn't awaited, so `CreateHabitController`'s
+   `Get.back(result: true)` had nowhere to land; Today kept showing "No habits yet"
+   after a successful create. Same gap existed on Insights → Habit Detail. Fixed
+   both call sites to `await` and reload on `true`. Habit Detail itself only
+   returned a result on archive/delete, not on a plain back-navigation after an
+   edit — added a `PopScope` (mirroring `DayDetailScreen`'s existing pattern) so
+   Today/Insights also refresh after an edit, not just archive/delete.
+3. **App still labeled "Onkur Customer"** in the launcher/task-switcher/system
+   permission dialogs — leftover boilerplate branding never updated. Fixed in
+   `AndroidManifest.xml`, iOS `Info.plist`, `linux/CMakeLists.txt`, and
+   `TextEnum.appName` (which feeds `GetMaterialApp.title`, i.e. the Android
+   recent-apps label — a second, separate place from the manifest's
+   `android:label`).
+4. **Settings' Time format `SegmentedButton` overflowed the screen by 24px** — it
+   was the trailing child of a `Row` fighting a `Spacer()` for space against a
+   label; the 3-segment button (System/12h/24h) didn't fit what was left. Fixed
+   by stacking label-above/control-below in a `Column`, matching the pattern
+   already used (without this bug) in Onboarding Preferences and the Start-of-week
+   row right below it.
+
+Takeaway worth remembering: none of these were things `flutter analyze` or unit
+tests could have caught — they're integration/runtime/layout concerns that only
+show up by actually running the app. Do this pass again before any release, not
+just once.

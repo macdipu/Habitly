@@ -52,4 +52,35 @@ class HabitScheduleDto {
       effectiveFrom: rule.effectiveFrom.toString(),
     );
   }
+
+  static Map<String, dynamic> toJson(HabitScheduleEntity entity) {
+    final rule = entity.rule;
+    return {
+      'id': entity.id,
+      'habitId': entity.habitId,
+      'mode': rule.mode.name,
+      'weekdays': rule.weekdays.toList(),
+      'weeklyTarget': rule.weeklyTarget,
+      'intervalDays': rule.intervalDays,
+      'anchorDate': rule.anchorDate?.toString(),
+      'startDate': rule.startDate.toString(),
+      'endDate': rule.endDate?.toString(),
+      'effectiveFrom': rule.effectiveFrom.toString(),
+    };
+  }
+
+  static HabitScheduleEntity fromJson(Map<String, dynamic> json) => HabitScheduleEntity(
+        id: json['id'] as String,
+        habitId: json['habitId'] as String,
+        rule: HabitScheduleRule(
+          mode: ScheduleMode.values.byName(json['mode'] as String),
+          weekdays: (json['weekdays'] as List).map((e) => e as int).toSet(),
+          weeklyTarget: json['weeklyTarget'] as int?,
+          intervalDays: json['intervalDays'] as int?,
+          anchorDate: json['anchorDate'] == null ? null : LocalDate.parse(json['anchorDate'] as String),
+          startDate: LocalDate.parse(json['startDate'] as String),
+          endDate: json['endDate'] == null ? null : LocalDate.parse(json['endDate'] as String),
+          effectiveFrom: LocalDate.parse(json['effectiveFrom'] as String),
+        ),
+      );
 }

@@ -34,4 +34,26 @@ class CheckInDto {
       updatedAt: entity.updatedAt,
     );
   }
+
+  static Map<String, dynamic> toJson(CheckInEntity entity) => {
+        'id': entity.id,
+        'habitId': entity.habitId,
+        'localDate': entity.localDate.toString(),
+        'value': entity.value,
+        'status': entity.status.name,
+        'note': entity.note,
+        'createdAt': entity.createdAt.toIso8601String(),
+        'updatedAt': entity.updatedAt.toIso8601String(),
+      };
+
+  static CheckInEntity fromJson(Map<String, dynamic> json) => CheckInEntity(
+        id: json['id'] as String,
+        habitId: json['habitId'] as String,
+        localDate: LocalDate.parse(json['localDate'] as String),
+        value: (json['value'] as num?)?.toDouble(),
+        status: CheckInStatus.values.byName(json['status'] as String),
+        note: json['note'] as String?,
+        createdAt: DateTime.parse(json['createdAt'] as String),
+        updatedAt: DateTime.parse(json['updatedAt'] as String),
+      );
 }

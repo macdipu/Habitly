@@ -1,5 +1,6 @@
 import 'package:customer/features/calendar/presentation/bindings/calendar_binding.dart';
 import 'package:customer/features/insights/presentation/bindings/insights_binding.dart';
+import 'package:customer/features/settings/presentation/bindings/data_backup_binding.dart';
 import 'package:customer/features/settings/presentation/bindings/settings_binding.dart';
 import 'package:customer/features/today/presentation/bindings/today_binding.dart';
 import 'package:get/get.dart';
@@ -15,5 +16,6 @@ class AppShellBinding extends Bindings {
     CalendarBinding().dependencies();
     InsightsBinding().dependencies();
     SettingsBinding().dependencies();
+    DataBackupBinding().dependencies();
   }
 }

@@ -23,16 +23,21 @@ class TodayScreen extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
         if (controller.items.isEmpty) {
-          return _EmptyToday(onCreate: () => Get.toNamed(AppRoutes.createHabit));
+          return _EmptyToday(onCreate: () => _createHabit(controller));
         }
         return _TodayDashboard(controller: controller);
       }),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => Get.toNamed(AppRoutes.createHabit),
+        onPressed: () => _createHabit(controller),
         tooltip: 'Create habit',
         child: const Icon(Icons.add),
       ),
     );
+  }
+
+  Future<void> _createHabit(TodayController controller) async {
+    final created = await Get.toNamed(AppRoutes.createHabit);
+    if (created == true) controller.loadToday();
   }
 }
 

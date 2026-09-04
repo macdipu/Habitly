@@ -240,4 +240,46 @@ class HabitRepositoryImpl implements HabitRepository {
       return Left(LocalDatabaseQueryFailure(e.toString()));
     }
   }
+
+  @override
+  ResultVoid deleteAllData() async {
+    try {
+      await _db.transaction(() async {
+        await _db.delete(_db.checkIns).go();
+        await _db.delete(_db.reminders).go();
+        await _db.delete(_db.habitSchedules).go();
+        await _db.delete(_db.habits).go();
+      });
+      return const Right(null);
+    } catch (e) {
+      return Left(LocalDatabaseQueryFailure(e.toString()));
+    }
+  }
+
+  @override
+  ResultVoid replaceAllData({
+    required List<HabitEntity> habits,
+    required List<HabitScheduleEntity> schedules,
+    required List<ReminderEntity> reminders,
+    required List<CheckInEntity> checkIns,
+  }) async {
+    try {
+      await _db.transaction(() async {
+        await _db.delete(_db.checkIns).go();
+        await _db.delete(_db.reminders).go();
+        await _db.delete(_db.habitSchedules).go();
+        await _db.delete(_db.habits).go();
+
+        await _db.batch((batch) {
+          batch.insertAll(_db.habits, habits.map(HabitDto.toInsertCompanion));
+          batch.insertAll(_db.habitSchedules, schedules.map(HabitScheduleDto.toInsertCompanion));
+          batch.insertAll(_db.reminders, reminders.map(ReminderDto.toInsertCompanion));
+          batch.insertAll(_db.checkIns, checkIns.map(CheckInDto.toInsertCompanion));
+        });
+      });
+      return const Right(null);
+    } catch (e) {
+      return Left(LocalDatabaseQueryFailure(e.toString()));
+    }
+  }
 }

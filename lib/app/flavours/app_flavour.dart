@@ -10,6 +10,9 @@ import 'package:customer/core/data/repositories/app_settings_repository_impl.dar
 import 'package:customer/core/domain/repositories/app_settings_repository.dart';
 import 'package:customer/features/habits/data/repo_impl/habit_repository_impl.dart';
 import 'package:customer/features/habits/domain/repo/habit_repository.dart';
+import 'package:customer/services/backup/backup_service.dart';
+import 'package:customer/services/backup/csv_export_service.dart';
+import 'package:customer/services/backup/restore_service.dart';
 import 'package:customer/services/notifications/habit_notification_service.dart';
 import 'package:customer/services/notifications/notification_settings_repository.dart';
 import 'package:customer/services/notifications/reminder_reconciler.dart';
@@ -38,32 +41,53 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   unawaited(_reconcileRemindersOnStartup());
 }
 
+// These are true app-lifetime singletons (a database connection chief
+// among them), registered once at bootstrap and never torn down. `Get.put`
+// with `permanent: true` is the correct GetX idiom here — NOT
+// `Get.lazyPut(..., fenix: true)`, which GetX's default smart management
+// disposes as soon as no *route* is currently referencing it (e.g. when
+// onboarding finishes and its routes are cleared via `Get.offAllNamed`),
+// then silently recreates on next use. For most of these that's merely
+// wasteful; for AppDatabase it's a real bug: a second `AppDatabase()`
+// opens a second live connection to the same SQLite file, and Drift
+// itself warns at runtime that this risks race conditions/corruption —
+// exactly what happened here before this fix (caught by manually running
+// the app through onboarding into the shell, not by static analysis or
+// unit tests).
 void _initialize() {
-  Get.lazyPut<AppConfig>(() => const AppConfig(), fenix: true);
-  Get.lazyPut<PreferenceCache>(() => PreferenceCache(), fenix: true);
-  Get.lazyPut<ApiUrl>(() => ApiUrl(), fenix: true);
-  Get.lazyPut<ApiClient>(
-    () => ApiClient(Get.find<AppConfig>(), Get.find<PreferenceCache>(), Get.find<ApiUrl>()),
-    fenix: true,
+  Get.put<AppConfig>(const AppConfig(), permanent: true);
+  Get.put<PreferenceCache>(PreferenceCache(), permanent: true);
+  Get.put<ApiUrl>(ApiUrl(), permanent: true);
+  Get.put<ApiClient>(
+    ApiClient(Get.find<AppConfig>(), Get.find<PreferenceCache>(), Get.find<ApiUrl>()),
+    permanent: true,
   );
-  Get.lazyPut<NotificationService>(() => NotificationService(), fenix: true);
-  Get.lazyPut<AppSettingsRepository>(() => AppSettingsRepositoryImpl(), fenix: true);
+  Get.put<NotificationService>(NotificationService(), permanent: true);
+  Get.put<AppSettingsRepository>(AppSettingsRepositoryImpl(), permanent: true);
 
-  // Habitly local database — lazily opened on first query, never blocks
-  // bootstrap (docs/ARCHITECTURE.md §2).
-  Get.lazyPut<AppDatabase>(() => AppDatabase(), fenix: true);
-  Get.lazyPut<HabitRepository>(() => HabitRepositoryImpl(Get.find<AppDatabase>()), fenix: true);
+  // Habitly local database — lazily opened on first query (LazyDatabase),
+  // but the AppDatabase *instance itself* must be a single permanent
+  // singleton for the app's whole lifetime.
+  Get.put<AppDatabase>(AppDatabase(), permanent: true);
+  Get.put<HabitRepository>(HabitRepositoryImpl(Get.find<AppDatabase>()), permanent: true);
 
-  Get.lazyPut<HabitNotificationService>(() => HabitNotificationService(), fenix: true);
-  Get.lazyPut<NotificationSettingsRepository>(() => NotificationSettingsRepository(), fenix: true);
-  Get.lazyPut<ReminderReconciler>(
-    () => ReminderReconciler(
+  Get.put<HabitNotificationService>(HabitNotificationService(), permanent: true);
+  Get.put<NotificationSettingsRepository>(NotificationSettingsRepository(), permanent: true);
+  Get.put<ReminderReconciler>(
+    ReminderReconciler(
       Get.find<HabitRepository>(),
       Get.find<HabitNotificationService>(),
       Get.find<NotificationSettingsRepository>(),
     ),
-    fenix: true,
+    permanent: true,
   );
+
+  Get.put<BackupService>(BackupService(Get.find<HabitRepository>()), permanent: true);
+  Get.put<RestoreService>(
+    RestoreService(Get.find<HabitRepository>(), Get.find<BackupService>()),
+    permanent: true,
+  );
+  Get.put<CsvExportService>(CsvExportService(Get.find<HabitRepository>()), permanent: true);
 }
 
 Future<void> _reconcileRemindersOnStartup() async {

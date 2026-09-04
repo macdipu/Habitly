@@ -61,4 +61,39 @@ class HabitDto {
       archivedAt: Value(entity.archivedAt),
     );
   }
+
+  /// Backup export (BRD §14.2) — unambiguous ISO-8601 dates.
+  static Map<String, dynamic> toJson(HabitEntity entity) => {
+        'id': entity.id,
+        'name': entity.name,
+        'type': entity.type.name,
+        'icon': entity.icon,
+        'color': entity.color,
+        'description': entity.description,
+        'unit': entity.unit,
+        'target': entity.target,
+        'goalDirection': entity.goalDirection?.name,
+        'sortOrder': entity.sortOrder,
+        'createdAt': entity.createdAt.toIso8601String(),
+        'updatedAt': entity.updatedAt.toIso8601String(),
+        'archivedAt': entity.archivedAt?.toIso8601String(),
+      };
+
+  static HabitEntity fromJson(Map<String, dynamic> json) => HabitEntity(
+        id: json['id'] as String,
+        name: json['name'] as String,
+        type: HabitType.values.byName(json['type'] as String),
+        icon: json['icon'] as String,
+        color: json['color'] as int,
+        description: json['description'] as String?,
+        unit: json['unit'] as String?,
+        target: (json['target'] as num?)?.toDouble(),
+        goalDirection: json['goalDirection'] == null
+            ? null
+            : GoalDirection.values.byName(json['goalDirection'] as String),
+        sortOrder: json['sortOrder'] as int? ?? 0,
+        createdAt: DateTime.parse(json['createdAt'] as String),
+        updatedAt: DateTime.parse(json['updatedAt'] as String),
+        archivedAt: json['archivedAt'] == null ? null : DateTime.parse(json['archivedAt'] as String),
+      );
 }

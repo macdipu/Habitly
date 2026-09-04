@@ -14,7 +14,13 @@ class HabitDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.find<HabitDetailController>();
 
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        Get.back(result: controller.changed.value);
+      },
+      child: Scaffold(
       appBar: AppBar(
         title: Obx(() => Text(controller.habit.value?.name ?? '')),
         actions: [
@@ -91,6 +97,7 @@ class HabitDetailScreen extends StatelessWidget {
           ],
         );
       }),
+      ),
     );
   }
 
@@ -102,7 +109,10 @@ class HabitDetailScreen extends StatelessWidget {
     switch (action) {
       case 'edit':
         final changed = await Get.toNamed(AppRoutes.editHabit, arguments: controller.habitId);
-        if (changed == true) controller.load();
+        if (changed == true) {
+          controller.changed.value = true;
+          controller.load();
+        }
         break;
       case 'archive':
         final confirmed = await showDialog<bool>(

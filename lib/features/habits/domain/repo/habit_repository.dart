@@ -58,4 +58,22 @@ abstract class HabitRepository {
   ResultVoid upsertCheckIn(CheckInEntity checkIn);
 
   ResultVoid deleteCheckIn({required String habitId, required LocalDate localDate});
+
+  /// Permanently wipes every habit/schedule/reminder/check-in. Used by
+  /// "Delete all data" (BRD §S26) and, before writing restored data, by
+  /// Restore Backup (BRD §S24) — callers are responsible for the
+  /// confirmation UX; this method does not re-confirm.
+  ResultVoid deleteAllData();
+
+  /// Atomically replaces the entire local dataset with [habits]/
+  /// [schedules]/[reminders]/[checkIns] — the write side of Restore Backup
+  /// (BRD §S24, docs/SRS.md FR-61). Callers must validate the backup and
+  /// take a pre-restore safety snapshot before calling this; it does not
+  /// do either itself.
+  ResultVoid replaceAllData({
+    required List<HabitEntity> habits,
+    required List<HabitScheduleEntity> schedules,
+    required List<ReminderEntity> reminders,
+    required List<CheckInEntity> checkIns,
+  });
 }

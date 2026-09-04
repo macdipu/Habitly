@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../controller/settings_controller.dart';
+import '../widgets/data_backup_section.dart';
 
 /// S20/S21/S22/S25 condensed into one screen for this pass — Appearance and
 /// Reminders & Notifications are fully wired; Data & Backup lands once
@@ -56,10 +57,11 @@ class SettingsScreen extends StatelessWidget {
               )),
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Text('Time format'),
-                const Spacer(),
+                const SizedBox(height: 8),
                 Obx(() => SegmentedButton<AppTimeFormat>(
                       segments: const [
                         ButtonSegment(value: AppTimeFormat.system, label: Text('System')),
@@ -170,12 +172,7 @@ class SettingsScreen extends StatelessWidget {
           }),
           const Divider(),
           const _SectionLabel('Data & backup'),
-          const ListTile(
-            leading: Icon(Icons.backup_outlined),
-            title: Text('Coming soon'),
-            subtitle: Text('Backup, restore, and CSV/JSON export land with Phase 4'),
-            enabled: false,
-          ),
+          const DataBackupSection(),
           const Divider(),
           const _SectionLabel('Privacy & about'),
           const ListTile(

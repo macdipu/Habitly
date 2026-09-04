@@ -28,6 +28,12 @@ class HabitDetailController extends BaseController {
   final Rx<HabitEntity?> habit = Rx<HabitEntity?>(null);
   final Rx<HabitStats?> stats = Rx<HabitStats?>(null);
 
+  /// True once an edit succeeded this visit — the screen returns this on
+  /// pop (even a plain back-navigation, not just archive/delete) so a
+  /// caller like Today/Insights knows to reload rather than show a stale
+  /// name/schedule (docs/SRS.md FR-13 correctness, not just archive/delete).
+  final RxBool changed = false.obs;
+
   @override
   void onInit() {
     super.onInit();

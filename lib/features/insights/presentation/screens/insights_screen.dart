@@ -53,7 +53,11 @@ class InsightsScreen extends StatelessWidget {
             ...controller.insights.map((insight) {
               return Card(
                 child: ListTile(
-                  onTap: () => Get.toNamed(AppRoutes.habitDetail, arguments: insight.habit.id),
+                  onTap: () async {
+                    final changed =
+                        await Get.toNamed(AppRoutes.habitDetail, arguments: insight.habit.id);
+                    if (changed == true) controller.load();
+                  },
                   title: Text(insight.habit.name),
                   subtitle: Text(
                     insight.stats.adherencePercent == null
