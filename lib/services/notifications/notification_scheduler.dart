@@ -10,6 +10,9 @@ abstract class NotificationScheduler {
     required String title,
     required String body,
     required tz.TZDateTime scheduledDate,
+    // The habitId — carried through to a tap so the app can deep-link
+    // straight into that habit's detail screen (BRD §9).
+    required String payload,
   });
 
   Future<void> cancel(int id);

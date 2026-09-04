@@ -20,6 +20,12 @@ class HabitNotificationService implements NotificationScheduler {
   final FlutterLocalNotificationsPlugin _plugin = FlutterLocalNotificationsPlugin();
   bool _initialized = false;
 
+  /// Set by app bootstrap (`app_flavour.dart`) once routing is up. Fired
+  /// with the habitId payload when a reminder is tapped while the app is
+  /// running or resumed from background (BRD §9 deep link). Cold-start
+  /// (terminated) taps are handled separately by [getLaunchHabitId].
+  void Function(String habitId)? onNotificationTapped;
+
   Future<void> init() async {
     if (_initialized) return;
 
@@ -52,9 +58,29 @@ class HabitNotificationService implements NotificationScheduler {
           requestSoundPermission: false,
         ),
       ),
+      onDidReceiveNotificationResponse: _handleResponse,
     );
 
     _initialized = true;
+  }
+
+  void _handleResponse(NotificationResponse response) {
+    final habitId = response.payload;
+    if (habitId != null && habitId.isNotEmpty) {
+      onNotificationTapped?.call(habitId);
+    }
+  }
+
+  /// The habitId that launched the app from a fully-terminated state via a
+  /// notification tap, or null if the app wasn't launched that way. Callers
+  /// (Splash) should navigate to that habit's detail screen once the app's
+  /// own initial route decision is already made — see
+  /// `SplashController._bootstrap`.
+  Future<String?> getLaunchHabitId() async {
+    if (!_initialized) await init();
+    final details = await _plugin.getNotificationAppLaunchDetails();
+    if (details?.didNotificationLaunchApp != true) return null;
+    return details?.notificationResponse?.payload;
   }
 
   /// Requests OS notification permission. Never call this at habit-save
@@ -92,6 +118,7 @@ class HabitNotificationService implements NotificationScheduler {
     required String title,
     required String body,
     required tz.TZDateTime scheduledDate,
+    required String payload,
   }) async {
     if (!_initialized) await init();
     await _plugin.zonedSchedule(
@@ -110,6 +137,7 @@ class HabitNotificationService implements NotificationScheduler {
         ),
         iOS: DarwinNotificationDetails(),
       ),
+      payload: payload,
     );
   }
 

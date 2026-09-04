@@ -76,6 +76,7 @@ class ReminderReconciler {
         title: habit.name,
         body: (reminder.label?.isNotEmpty ?? false) ? reminder.label! : 'Time for your habit',
         scheduledDate: scheduledDate,
+        payload: habitId,
       );
     }
   }

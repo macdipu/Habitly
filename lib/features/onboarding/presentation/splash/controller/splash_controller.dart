@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:customer/core/data/database/app_database.dart';
 import 'package:customer/core/domain/repositories/app_settings_repository.dart';
 import 'package:customer/res/routes/app_routes.dart';
+import 'package:customer/services/notifications/habit_notification_service.dart';
 import 'package:get/get.dart';
 
 /// S01 — bootstraps local storage, detects first launch, and routes to
@@ -43,6 +44,15 @@ class SplashController extends GetxController {
 
       if (onboardingComplete) {
         Get.offAllNamed(AppRoutes.appShell);
+        // A reminder tap can cold-start the app from fully terminated —
+        // route into that habit only after the shell route is settled, so
+        // this deep link is never stomped by the shell's own navigation
+        // (BRD §9).
+        final launchHabitId =
+            await Get.find<HabitNotificationService>().getLaunchHabitId();
+        if (launchHabitId != null) {
+          Get.toNamed(AppRoutes.habitDetail, arguments: launchHabitId);
+        }
       } else {
         Get.offAllNamed(AppRoutes.onboardingWelcome);
       }

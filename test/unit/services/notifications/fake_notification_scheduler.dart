@@ -7,7 +7,8 @@ class ScheduledCall extends SchedulerCall {
   final int id;
   final String title;
   final tz.TZDateTime scheduledDate;
-  ScheduledCall(this.id, this.title, this.scheduledDate);
+  final String payload;
+  ScheduledCall(this.id, this.title, this.scheduledDate, this.payload);
 }
 
 class CancelledCall extends SchedulerCall {
@@ -28,8 +29,9 @@ class FakeNotificationScheduler implements NotificationScheduler {
     required String title,
     required String body,
     required tz.TZDateTime scheduledDate,
+    required String payload,
   }) async {
-    calls.add(ScheduledCall(id, title, scheduledDate));
+    calls.add(ScheduledCall(id, title, scheduledDate, payload));
     activeIds.add(id);
   }
 

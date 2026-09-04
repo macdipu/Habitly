@@ -20,6 +20,7 @@ import 'package:customer/services/notifications/habit_notification_service.dart'
 import 'package:customer/services/notifications/notification_settings_repository.dart';
 import 'package:customer/services/notifications/reminder_reconciler.dart';
 import 'package:customer/services/push_notification/notification_service.dart';
+import 'package:customer/res/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
@@ -103,7 +104,14 @@ void _initialize() {
 
 Future<void> _reconcileRemindersOnStartup() async {
   try {
-    await Get.find<HabitNotificationService>().init();
+    final notificationService = Get.find<HabitNotificationService>();
+    await notificationService.init();
+    // Deep-link into the habit when a reminder is tapped while the app is
+    // running or resumed from background (BRD §9). Cold-start (terminated)
+    // taps are handled separately by SplashController via
+    // `getLaunchHabitId()`, since routing isn't up yet at this point.
+    notificationService.onNotificationTapped =
+        (habitId) => Get.toNamed(AppRoutes.habitDetail, arguments: habitId);
     await Get.find<ReminderReconciler>().reconcileAll();
   } catch (e) {
     log('Reminder reconciliation on startup failed: $e');
