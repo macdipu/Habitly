@@ -42,6 +42,29 @@ class BasicsStep extends StatelessWidget {
               }).toList(),
             )),
         const SizedBox(height: 16),
+        const Text('Icon'),
+        const SizedBox(height: 8),
+        Obx(() => Wrap(
+              spacing: 8,
+              children: kHabitIconOptions.map((i) {
+                final selected = controller.icon.value == i;
+                return GestureDetector(
+                  onTap: () => controller.icon.value = i,
+                  child: CircleAvatar(
+                    backgroundColor: selected
+                        ? Color(controller.color.value)
+                        : Color(controller.color.value).withValues(alpha: 0.16),
+                    radius: 18,
+                    child: Icon(
+                      habitIconFor(i),
+                      size: 18,
+                      color: selected ? Colors.white : Color(controller.color.value),
+                    ),
+                  ),
+                );
+              }).toList(),
+            )),
+        const SizedBox(height: 16),
         const Text('Color'),
         const SizedBox(height: 8),
         Obx(() => Wrap(

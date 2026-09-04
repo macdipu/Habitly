@@ -17,13 +17,21 @@ class CalendarDayAggregator {
     final scheduled = statesForDay.where((s) => s != OccurrenceState.notScheduled).toList();
     if (scheduled.isEmpty) return CalendarDayStatus.none;
 
-    final resolved = scheduled.where((s) => s != OccurrenceState.pending).toList();
-    if (resolved.isEmpty) return CalendarDayStatus.none;
-
-    final eligible = resolved.where((s) => s != OccurrenceState.skipped).toList();
+    final eligible = scheduled.where((s) => s != OccurrenceState.skipped).toList();
     if (eligible.isEmpty) return CalendarDayStatus.none;
 
     final completed = eligible.where((s) => s == OccurrenceState.completed).length;
+    final pending = eligible.where((s) => s == OccurrenceState.pending).length;
+
+    // A day with anything still pending isn't resolved yet — it must never
+    // read as success (BRD §S14) just because everything ELSE due so far
+    // happens to be completed. Previously `pending` was discarded before
+    // this check, which let a day with one uncompleted habit still show
+    // as a fully-completed "success" day.
+    if (pending > 0) {
+      return completed == 0 ? CalendarDayStatus.none : CalendarDayStatus.partial;
+    }
+
     if (completed == eligible.length) return CalendarDayStatus.success;
     if (completed == 0) return CalendarDayStatus.missed;
     return CalendarDayStatus.partial;

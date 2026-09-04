@@ -133,7 +133,7 @@ class TodayHabitCard extends StatelessWidget {
 
   IconData _iconFor(String icon) {
     // Icon identifier -> IconData mapping lives here so entities stay
-    // Flutter-free. Extend as the icon picker (S07) grows.
+    // Flutter-free. Extend alongside `kHabitIconOptions`.
     switch (icon) {
       case 'water_drop':
         return Icons.water_drop_outlined;

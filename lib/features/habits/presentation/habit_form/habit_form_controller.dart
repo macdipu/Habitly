@@ -7,7 +7,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 /// Available icon keys — kept small deliberately; extend alongside
-/// `TodayHabitCard._iconFor` when the real icon picker (S07) is built.
+/// [habitIconFor] and the per-key switches in `TodayHabitCard`,
+/// `QuickCheckInSheet`, and `ManageHabitsScreen`.
 const kHabitIconOptions = [
   'check',
   'water_drop',
@@ -16,6 +17,18 @@ const kHabitIconOptions = [
   'sleep',
   'smoking'
 ];
+
+/// Maps an icon key to its glyph for the Basics-step picker. Kept separate
+/// from the per-widget `_iconFor` switches (which style icons differently
+/// per context) so the picker doesn't depend on any one of them.
+IconData habitIconFor(String icon) => switch (icon) {
+      'water_drop' => Icons.water_drop_outlined,
+      'book' => Icons.menu_book_outlined,
+      'fitness' => Icons.fitness_center_outlined,
+      'sleep' => Icons.bedtime_outlined,
+      'smoking' => Icons.smoke_free_outlined,
+      _ => Icons.check_circle_outline,
+    };
 
 const kHabitColorOptions = <int>[
   0xFF2E7D32, // green

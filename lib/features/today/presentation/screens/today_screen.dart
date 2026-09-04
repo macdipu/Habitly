@@ -92,6 +92,8 @@ class _TodayDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     final due = controller.dueNow;
     final done = controller.completed;
+    final completed = done.where((i) => i.state != OccurrenceState.skipped).toList();
+    final skipped = done.where((i) => i.state == OccurrenceState.skipped).toList();
 
     return RefreshIndicator(
       onRefresh: controller.loadToday,
@@ -106,9 +108,14 @@ class _TodayDashboard extends StatelessWidget {
             const _SectionHeader('DUE NOW'),
             for (final (index, item) in due.indexed) _buildCard(context, item, index),
           ],
-          if (done.isNotEmpty) ...[
+          if (completed.isNotEmpty) ...[
             const _SectionHeader('COMPLETED'),
-            for (final (index, item) in done.indexed) _buildCard(context, item, due.length + index),
+            for (final (index, item) in completed.indexed) _buildCard(context, item, due.length + index),
+          ],
+          if (skipped.isNotEmpty) ...[
+            const _SectionHeader('SKIPPED'),
+            for (final (index, item) in skipped.indexed)
+              _buildCard(context, item, due.length + completed.length + index),
           ],
         ],
       ),

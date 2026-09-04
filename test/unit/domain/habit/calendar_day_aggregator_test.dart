@@ -55,5 +55,28 @@ void main() {
         CalendarDayStatus.success,
       );
     });
+
+    test('one habit still pending must never let the day read as success', () {
+      expect(
+        aggregator.aggregate([OccurrenceState.completed, OccurrenceState.pending]),
+        CalendarDayStatus.partial,
+      );
+    });
+
+    test('completed + skipped + pending is partial, not success', () {
+      expect(
+        aggregator.aggregate(
+          [OccurrenceState.completed, OccurrenceState.skipped, OccurrenceState.pending],
+        ),
+        CalendarDayStatus.partial,
+      );
+    });
+
+    test('nothing completed yet with one still pending is none, not partial', () {
+      expect(
+        aggregator.aggregate([OccurrenceState.missed, OccurrenceState.pending]),
+        CalendarDayStatus.none,
+      );
+    });
   });
 }
