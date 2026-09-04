@@ -155,9 +155,11 @@ Follows BRD §20 phases, adapted to this repo. Status as of the last build pass
   (new `AppSettingsRepository` methods, new `AppTimeFormat` enum) are set
   here and editable again later from Settings. Start-of-week feeds the
   Calendar month grid's first column (`CalendarController`); time-format
-  feeds `TimeFormatController.formatTime` (new controller, same
-  Get.put-in-`app.dart` pattern as `ThemeController`/`LocaleController`),
-  used wherever a stored 'HH:mm' reminder/quiet-hours time is displayed.
+  feeds `TimeFormatController.formatTime` (registered alongside
+  `ThemeController`/`LocaleController` as a permanent singleton in
+  `app_flavour.dart`'s `_initialize()` — see §11 addendum below for why this
+  moved out of `app.dart`), used wherever a stored 'HH:mm' reminder/quiet-hours
+  time is displayed.
   Known gap: an already-mounted Calendar tab doesn't live-refresh if
   start-of-week changes in Settings mid-session (picks it up on next
   load/launch) — documented in `SettingsController`, not silently broken.
@@ -249,3 +251,55 @@ Takeaway worth remembering: none of these were things `flutter analyze` or unit
 tests could have caught — they're integration/runtime/layout concerns that only
 show up by actually running the app. Do this pass again before any release, not
 just once.
+
+## 11. Visual redesign + post-redesign audit fixes
+
+The app was restyled from the original navy/yellow Material boilerplate to a
+warm sage/clay palette (matching a Claude Design mockup pass), with Newsreader
+serif for display/headline text and Manrope sans elsewhere. Single source of
+truth stays `lib/core/presentation/theme/color_schemes.dart` (`AppColors`) +
+`text_theme.dart` — every screen consumes it via `ColorScheme`/`context.`
+extensions, nothing hardcodes hex outside that file (verified by grep as part
+of the audit below; the one hit, an onboarding `Colors.green`, is fixed).
+`Today`, `Habit Detail`, `Calendar`, and `Insights` also picked up
+`flutter_animate` micro-interactions (progress-ring fill, animated
+check/undo swap, staggered card entrance, count-up stat numbers) and a
+`neutralMiss` token so a missed/skipped day never renders red anywhere
+(BRD's "never shame a skipped day" intent) — `OccurrenceHeatmap` and the
+Calendar day grid both use it instead of `colorScheme.error`.
+
+A follow-up self-audit against this file's own CLAUDE.md rules and basic
+accessibility/contrast checks found and fixed four issues, none caught by
+`flutter analyze` or the test suite:
+
+1. **`Get.put(Controller())` inside `_MyAppState`** (`app.dart`) — a direct
+   violation of the "never `Get.put` inside a widget State class" rule.
+   `ThemeController`/`LocaleController`/`TimeFormatController` moved to
+   `app_flavour.dart`'s `_initialize()` as `Get.put(..., permanent: true)`
+   singletons, same as every other app-lifetime dependency; `app.dart` now
+   only `Get.find()`s them.
+2. **`TodayHabitCard`'s status control lost its accessibility label** in the
+   redesign — the original `IconButton` had an implicit tooltip/semantics,
+   the replacement animated custom widget didn't. Fixed with an explicit
+   `Semantics`/`Tooltip` pair carrying a per-state label ("Done. Tap to
+   undo", "Mark done", "Missed", …).
+3. **Primary sage `#4C8F6B` on white text ≈ 3.85:1 contrast** — under WCAG
+   AA's 4.5:1 for normal text, and this color carries white text/icons on
+   the FAB, filled buttons, and the Insights hero card. Darkened to
+   `#3E7A5A` (≈5.1:1), same hue.
+4. **`lib/services/utilities/secure_storage_service.dart` was dead code** —
+   zero callers anywhere in `lib/`, a leftover from the boilerplate's
+   account/login flow that Habitly's BRD explicitly rules out (no accounts).
+   Deleted rather than force a use; `flutter_secure_storage` itself stays a
+   dependency (`core/data/cache/preference/shared_preference.dart` uses it).
+
+Also added: a dedicated `SaveCheckInUseCase` test
+(`test/unit/features/habits/save_check_in_use_case_test.dart`) — the app's
+single most-executed write path had no direct unit test before, only
+coverage via downstream stats/reconciler tests.
+
+Still genuinely outstanding from that audit, not attempted here: no CI
+pipeline, no cert pinning on `ApiClient`, no crash reporting, no widget
+tests (only unit tests exist across the whole suite) — all pre-existing gaps
+already tracked in this file's "Known TODOs" equivalent in the root
+`CLAUDE.md`.

@@ -91,6 +91,10 @@ extension ThemeExtensions on BuildContext {
   Color get divider => colorScheme.dividerColor;
   Color get border => colorScheme.borderColor;
 
+  /// Neutral tone for missed/incomplete habit occurrences — never red.
+  /// See [AppColors.neutralMiss].
+  Color get neutralMiss => colorScheme.neutralMissColor;
+
   // ---------------------------------------------------------------------------
   // Text styles
   // ---------------------------------------------------------------------------
@@ -142,4 +146,5 @@ extension CustomColorsExtension on ColorScheme {
 
   Color get dividerColor => _pick(AppColors.divider);
   Color get borderColor => _pick(AppColors.border);
+  Color get neutralMissColor => _pick(AppColors.neutralMiss);
 }

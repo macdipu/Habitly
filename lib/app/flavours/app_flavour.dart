@@ -8,6 +8,9 @@ import 'package:customer/core/data/http/client/api_client.dart';
 import 'package:customer/core/data/http/urls/api_urls.dart';
 import 'package:customer/core/data/repositories/app_settings_repository_impl.dart';
 import 'package:customer/core/domain/repositories/app_settings_repository.dart';
+import 'package:customer/core/presentation/controllers/locale_controller.dart';
+import 'package:customer/core/presentation/controllers/theme_controller.dart';
+import 'package:customer/core/presentation/controllers/time_format_controller.dart';
 import 'package:customer/features/habits/data/repo_impl/habit_repository_impl.dart';
 import 'package:customer/features/habits/domain/repo/habit_repository.dart';
 import 'package:customer/services/backup/backup_service.dart';
@@ -88,6 +91,14 @@ void _initialize() {
     permanent: true,
   );
   Get.put<CsvExportService>(CsvExportService(Get.find<HabitRepository>()), permanent: true);
+
+  // App-lifetime UI controllers MyApp's root widget reads directly
+  // (theme/locale/time format). Registered here, not via `Get.put` inside
+  // `_MyAppState`, so a widget rebuild can never re-register them (CLAUDE.md
+  // DI rule: never `Get.put(Controller())` inside a widget State class).
+  Get.put<ThemeController>(ThemeController(), permanent: true);
+  Get.put<LocaleController>(LocaleController(), permanent: true);
+  Get.put<TimeFormatController>(TimeFormatController(), permanent: true);
 }
 
 Future<void> _reconcileRemindersOnStartup() async {

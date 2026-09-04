@@ -1,6 +1,8 @@
+import 'package:customer/core/presentation/theme/theme_extensions.dart';
 import 'package:customer/features/habits/presentation/widgets/occurrence_heatmap.dart';
 import 'package:customer/res/routes/app_routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 
 import '../controller/habit_detail_controller.dart';
@@ -49,18 +51,23 @@ class HabitDetailScreen extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 28,
-                  backgroundColor: Color(habit.color).withValues(alpha: 0.15),
-                  child: Icon(Icons.check_circle_outline, color: Color(habit.color), size: 28),
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: Color(habit.color),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Icon(Icons.check_circle_outline, color: Colors.white, size: 28),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(habit.name, style: Theme.of(context).textTheme.headlineSmall),
-                      if (habit.description != null) Text(habit.description!),
+                      Text(habit.name, style: context.headlineSmall),
+                      if (habit.description != null)
+                        Text(habit.description!, style: context.bodyMedium?.copyWith(color: context.onSurfaceVariant)),
                     ],
                   ),
                 ),
@@ -75,27 +82,40 @@ class HabitDetailScreen extends StatelessWidget {
             else ...[
               Row(
                 children: [
-                  Expanded(child: _StatCard(label: 'Current streak', value: '${stats.currentStreak}')),
-                  const SizedBox(width: 12),
-                  Expanded(child: _StatCard(label: 'Best streak', value: '${stats.bestStreak}')),
-                  const SizedBox(width: 12),
                   Expanded(
                     child: _StatCard(
+                      icon: Icons.local_fire_department_outlined,
+                      label: 'Current streak',
+                      value: stats.currentStreak,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _StatCard(
+                      icon: Icons.emoji_events_outlined,
+                      label: 'Best streak',
+                      value: stats.bestStreak,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: _StatCard(
+                      icon: Icons.donut_large_outlined,
                       label: 'Adherence',
-                      value: stats.adherencePercent == null
-                          ? 'N/A'
-                          : '${stats.adherencePercent!.toStringAsFixed(0)}%',
+                      value: stats.adherencePercent?.round(),
+                      suffix: '%',
+                      fallback: 'N/A',
                     ),
                   ),
                 ],
               ),
               const SizedBox(height: 24),
-              Text('Last 90 days', style: Theme.of(context).textTheme.titleMedium),
+              Text('Last 90 days', style: context.titleMedium),
               const SizedBox(height: 12),
               OccurrenceHeatmap(occurrences: stats.occurrences),
             ],
           ],
-        );
+        ).animate().fadeIn(duration: 250.ms);
       }),
       ),
     );
@@ -162,22 +182,41 @@ class HabitDetailScreen extends StatelessWidget {
 }
 
 class _StatCard extends StatelessWidget {
+  final IconData icon;
   final String label;
-  final String value;
+  final int? value;
+  final String suffix;
+  final String fallback;
 
-  const _StatCard({required this.label, required this.value});
+  const _StatCard({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.suffix = '',
+    this.fallback = '0',
+  });
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Card(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 6),
         child: Column(
           children: [
-            Text(value, style: theme.textTheme.headlineSmall),
+            Icon(icon, size: 17, color: context.onSurfaceVariant),
+            const SizedBox(height: 6),
+            if (value == null)
+              Text(fallback, style: context.headlineSmall)
+            else
+              TweenAnimationBuilder<int>(
+                tween: IntTween(begin: 0, end: value),
+                duration: const Duration(milliseconds: 700),
+                curve: Curves.easeOutCubic,
+                builder: (context, animatedValue, _) =>
+                    Text('$animatedValue$suffix', style: context.headlineSmall),
+              ),
             const SizedBox(height: 4),
-            Text(label, style: theme.textTheme.bodySmall, textAlign: TextAlign.center),
+            Text(label, style: context.labelMedium?.copyWith(color: context.onSurfaceVariant), textAlign: TextAlign.center),
           ],
         ),
       ),

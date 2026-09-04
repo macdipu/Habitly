@@ -48,153 +48,164 @@ class AppColors {
   // MATERIAL 3 SYSTEM COLORS - ADAPTIVE
   // =========================================================
 
-  // Primary
+  // Primary — sage green, calm and non-clinical. Darkened from the initial
+  // #4C8F6B (~3.85:1 on white — fails WCAG AA 4.5:1 for text) to #3E7A5A
+  // (~5.1:1) since this color carries white text/icons on the FAB, filled
+  // buttons, and the Insights hero card.
   static const primary = AdaptiveColor(
-    light: Color(0xFF0A1A2F),
-    dark: Color(0xFF8FA8C8),
+    light: Color(0xFF3E7A5A),
+    dark: Color(0xFF6FBE93),
   );
 
   static const onPrimary = AdaptiveColor(
     light: Colors.white,
-    dark: Colors.black,
+    dark: Color(0xFF123322),
   );
 
   static const primaryContainer = AdaptiveColor(
-    light: Color(0xFF13263F),
-    dark: Color(0xFF0A1A2F),
+    light: Color(0xFFDCEEE3),
+    dark: Color(0xFF234A38),
   );
 
   static const onPrimaryContainer = AdaptiveColor(
-    light: Colors.white,
-    dark: Colors.white,
+    light: Color(0xFF1F4A34),
+    dark: Color(0xFFCFEFDD),
   );
 
-  // Secondary
+  // Secondary — warm clay accent
   static const secondary = AdaptiveColor(
-    light: Color(0xFFF4C430),
-    dark: Color(0xFFFFD76A),
+    light: Color(0xFFC97C4B),
+    dark: Color(0xFFD99B6C),
   );
 
   static const onSecondary = AdaptiveColor(
-    light: Color(0xFF332400),
-    dark: Colors.black,
+    light: Colors.white,
+    dark: Color(0xFF3B2312),
   );
 
   static const secondaryContainer = AdaptiveColor(
-    light: Color(0xFFFFF4CC),
-    dark: Color(0xFF4A3A00),
+    light: Color(0xFFF5E3D3),
+    dark: Color(0xFF4A2E19),
   );
 
   static const onSecondaryContainer = AdaptiveColor(
-    light: Color(0xFF2D1F00),
-    dark: Color(0xFFFFF4CC),
+    light: Color(0xFF5C3A1E),
+    dark: Color(0xFFF0D8C2),
   );
 
-  // Tertiary (Accent)
+  // Tertiary — soft slate blue (used for e.g. sleep-type habits)
   static const tertiary = AdaptiveColor(
-    light: Color(0xFFF2633B),
-    dark: Color(0xFFFF9D7F),
+    light: Color(0xFF4F7EA8),
+    dark: Color(0xFF86AFD4),
   );
 
   static const onTertiary = AdaptiveColor(
     light: Colors.white,
-    dark: Colors.black,
+    dark: Color(0xFF12283C),
   );
 
   static const tertiaryContainer = AdaptiveColor(
-    light: Color(0xFFFFE7DF),
-    dark: Color(0xFF661F0F),
+    light: Color(0xFFE1EBF5),
+    dark: Color(0xFF1F3A54),
   );
 
   static const onTertiaryContainer = AdaptiveColor(
-    light: Color(0xFF3F0C00),
-    dark: Color(0xFFFFE7DF),
+    light: Color(0xFF1F3A54),
+    dark: Color(0xFFD6E6F5),
   );
 
-  // Error
+  // Error — reserved for true errors/destructive actions. Missed-habit
+  // states intentionally do NOT use this; they read neutral (see
+  // AppColors.neutralMiss) so the app never shames a skipped day.
   static const error = AdaptiveColor(
-    light: Color(0xFFE63946),
-    dark: Color(0xFFF2B8B5),
+    light: Color(0xFFC1503D),
+    dark: Color(0xFFE0897A),
   );
 
   static const onError = AdaptiveColor(
     light: Colors.white,
-    dark: Color(0xFF601410),
+    dark: Color(0xFF4A160D),
   );
 
   static const errorContainer = AdaptiveColor(
-    light: Color(0xFFFFDAD6),
-    dark: Color(0xFF8C1D18),
+    light: Color(0xFFF6DFDA),
+    dark: Color(0xFF5C2318),
   );
 
   static const onErrorContainer = AdaptiveColor(
-    light: Color(0xFF410002),
-    dark: Color(0xFFFFDAD6),
+    light: Color(0xFF5C2318),
+    dark: Color(0xFFF6DFDA),
+  );
+
+  /// Neutral tone for missed/incomplete occurrences — deliberately not red.
+  static const neutralMiss = AdaptiveColor(
+    light: Color(0xFFCCC5B7),
+    dark: Color(0xFF4C473F),
   );
 
   // Surface
   static const surface = AdaptiveColor(
-    light: Colors.white,
-    dark: Color(0xFF111827),
+    light: Color(0xFFFDFBF8),
+    dark: Color(0xFF34302B),
   );
 
   static const onSurface = AdaptiveColor(
-    light: Color(0xFF1A1A1A),
-    dark: Colors.white,
+    light: Color(0xFF2B2620),
+    dark: Color(0xFFECE8E2),
   );
 
   static const onSurfaceVariant = AdaptiveColor(
-    light: Color(0xFF4A4A4A),
-    dark: Color(0xFFCAD6E3),
+    light: Color(0xFF6B6459),
+    dark: Color(0xFFA9A296),
   );
 
   // Layered surface tiers - low to high emphasis, for card/dialog/sheet
-  // hierarchy so dark mode reads as soft stacked panels, not flat black.
+  // hierarchy so both modes read as soft stacked panels, warm not clinical.
   static const surfaceContainerLowest = AdaptiveColor(
     light: Colors.white,
-    dark: Color(0xFF0B1220),
+    dark: Color(0xFF221F1B),
   );
 
   static const surfaceContainerLow = AdaptiveColor(
-    light: Color(0xFFF7F8FA),
-    dark: Color(0xFF161F33),
+    light: Color(0xFFFBF9F5),
+    dark: Color(0xFF2C2924),
   );
 
   static const surfaceContainer = AdaptiveColor(
-    light: Color(0xFFF1F2F5),
-    dark: Color(0xFF1C2740),
+    light: Color(0xFFF5F2EC),
+    dark: Color(0xFF34302B),
   );
 
   static const surfaceContainerHigh = AdaptiveColor(
-    light: Color(0xFFEAECF0),
-    dark: Color(0xFF23304D),
+    light: Color(0xFFEFEBE3),
+    dark: Color(0xFF3D3931),
   );
 
   static const surfaceContainerHighest = AdaptiveColor(
-    light: Color(0xFFE3E6EC),
-    dark: Color(0xFF2A3654),
+    light: Color(0xFFE9E4DA),
+    dark: Color(0xFF47423A),
   );
 
   // Background
   static const background = AdaptiveColor(
-    light: Color(0xFFFAFAFA),
-    dark: Color(0xFF0B1220),
+    light: Color(0xFFF7F5F0),
+    dark: Color(0xFF2C2924),
   );
 
   static const onBackground = AdaptiveColor(
-    light: Color(0xFF0A1A2F),
-    dark: Colors.white,
+    light: Color(0xFF2B2620),
+    dark: Color(0xFFECE8E2),
   );
 
   // Outlines
   static const outline = AdaptiveColor(
-    light: Color(0xFFC7C9CC),
-    dark: Color(0xFF5A5F6A),
+    light: Color(0xFFC9C2B3),
+    dark: Color(0xFF6B6459),
   );
 
   static const outlineVariant = AdaptiveColor(
-    light: Color(0xFFEAECF0),
-    dark: Color(0xFF404040),
+    light: Color(0xFFE1DCD0),
+    dark: Color(0xFF3D3931),
   );
 
   // Shadow & Scrim
@@ -347,23 +358,23 @@ class AppColors {
   // =========================================================
 
   static const text = AdaptiveColor(
-    light: Color(0xFF0A1A2F),
-    dark: Colors.white,
+    light: Color(0xFF2B2620),
+    dark: Color(0xFFECE8E2),
   );
 
   static const textSecondary = AdaptiveColor(
-    light: Color(0xFF4A4A4A),
-    dark: Color(0xFFCAD6E3),
+    light: Color(0xFF6B6459),
+    dark: Color(0xFFA9A296),
   );
 
   static const textTertiary = AdaptiveColor(
-    light: Color(0xFF9CA3AF),
-    dark: Color(0xFF6B7280),
+    light: Color(0xFF9C9384),
+    dark: Color(0xFF7A7468),
   );
 
   static const textDisabled = AdaptiveColor(
-    light: Color(0xFFD1D5DB),
-    dark: Color(0xFF4B5563),
+    light: Color(0xFFD6D0C4),
+    dark: Color(0xFF554F45),
   );
 
   // =========================================================
@@ -371,13 +382,13 @@ class AppColors {
   // =========================================================
 
   static const border = AdaptiveColor(
-    light: Color(0xFFEFEFEF),
-    dark: Color(0xFF2F3137),
+    light: Color(0xFFE1DCD0),
+    dark: Color(0xFF3D3931),
   );
 
   static const divider = AdaptiveColor(
-    light: Color(0xFFE6E8EC),
-    dark: Color(0xFF3A3D45),
+    light: Color(0xFFE1DCD0),
+    dark: Color(0xFF3D3931),
   );
 
   // =========================================================

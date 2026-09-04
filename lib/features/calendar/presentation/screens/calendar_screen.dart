@@ -1,5 +1,6 @@
 import 'package:customer/core/domain/habit/calendar_day_aggregator.dart';
 import 'package:customer/core/domain/habit/local_date.dart';
+import 'package:customer/core/presentation/theme/theme_extensions.dart';
 import 'package:customer/res/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -93,9 +94,13 @@ class _MonthGrid extends StatelessWidget {
               final day = index - leadingBlanks + 1;
               final date = LocalDate(monthDate.year, monthDate.month, day);
               final status = controller.statuses[date] ?? CalendarDayStatus.none;
+              final isToday = date.year == controller.now.year &&
+                  date.month == controller.now.month &&
+                  date.day == controller.now.day;
               return _DayCell(
                 day: day,
                 status: status,
+                isToday: isToday,
                 onTap: () async {
                   final changed = await Get.toNamed(AppRoutes.dayDetail, arguments: date);
                   if (changed == true) controller.load();
@@ -133,33 +138,61 @@ class _WeekdayHeader extends StatelessWidget {
 class _DayCell extends StatelessWidget {
   final int day;
   final CalendarDayStatus status;
+  final bool isToday;
   final VoidCallback onTap;
 
-  const _DayCell({required this.day, required this.status, required this.onTap});
+  const _DayCell({required this.day, required this.status, required this.isToday, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final (bg, icon) = switch (status) {
-      CalendarDayStatus.success => (theme.colorScheme.primary, Icons.check),
-      CalendarDayStatus.partial => (theme.colorScheme.tertiary, Icons.donut_large),
-      CalendarDayStatus.missed => (theme.colorScheme.error.withValues(alpha: 0.6), Icons.close),
-      CalendarDayStatus.none => (Colors.transparent, null),
+    final (bg, fg) = switch (status) {
+      CalendarDayStatus.success => (context.primary, Colors.white),
+      CalendarDayStatus.partial => (context.secondaryContainer, context.colorScheme.onSecondaryContainer),
+      CalendarDayStatus.missed => (Colors.transparent, context.onSurface),
+      CalendarDayStatus.none => (Colors.transparent, context.onSurface),
     };
+    // Missed reads as a plain number with a quiet dot underneath — never a
+    // red X. A skipped day is just "no data", not a failure to flag.
+    final showMissDot = status == CalendarDayStatus.missed;
 
     return Semantics(
       label: 'Day $day: ${status.name}',
       button: true,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Padding(
-          padding: const EdgeInsets.all(4),
-          child: CircleAvatar(
-            backgroundColor: bg,
-            child: icon != null
-                ? Icon(icon, size: 16, color: theme.colorScheme.onPrimary)
-                : Text('$day', style: theme.textTheme.bodySmall),
+        borderRadius: BorderRadius.circular(22),
+        child: SizedBox(
+          width: 44,
+          height: 44,
+          child: Center(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: bg,
+                    shape: BoxShape.circle,
+                    border: isToday ? Border.all(color: context.primary, width: 1.6) : null,
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    '$day',
+                    style: context.bodyMedium?.copyWith(color: fg, fontWeight: FontWeight.w600),
+                  ),
+                ),
+                if (showMissDot)
+                  Positioned(
+                    bottom: 0,
+                    child: Container(
+                      width: 4,
+                      height: 4,
+                      decoration: BoxDecoration(color: context.neutralMiss, shape: BoxShape.circle),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -172,13 +205,16 @@ class _Legend extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    Widget item(Color color, String label) => Row(
+    Widget dot(Color color, String label, {bool small = false}) => Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            CircleAvatar(radius: 6, backgroundColor: color),
+            Container(
+              width: small ? 6 : 11,
+              height: small ? 6 : 11,
+              decoration: BoxDecoration(color: color, shape: BoxShape.circle),
+            ),
             const SizedBox(width: 6),
-            Text(label, style: theme.textTheme.bodySmall),
+            Text(label, style: context.bodySmall?.copyWith(color: context.onSurfaceVariant)),
           ],
         );
 
@@ -186,9 +222,9 @@ class _Legend extends StatelessWidget {
       spacing: 16,
       runSpacing: 8,
       children: [
-        item(theme.colorScheme.primary, 'All done'),
-        item(theme.colorScheme.tertiary, 'Partial'),
-        item(theme.colorScheme.error.withValues(alpha: 0.6), 'Missed'),
+        dot(context.primary, 'All done'),
+        dot(context.secondaryContainer, 'Partial'),
+        dot(context.neutralMiss, 'Missed', small: true),
       ],
     );
   }

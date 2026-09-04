@@ -12,7 +12,6 @@ class AppTheme {
   static ThemeData _buildTheme({required bool isDark}) {
     Color c(AdaptiveColor ac) => isDark ? ac.dark : ac.light;
     final textTheme = AppTextTheme.lightTextTheme;
-    final shadowAlpha = isDark ? 0.3 : 0.1;
 
     final colorScheme = ColorScheme(
       brightness: isDark ? Brightness.dark : Brightness.light,
@@ -70,31 +69,32 @@ class AppTheme {
       ),
 
       cardTheme: CardThemeData(
-        color: colorScheme.surfaceContainerLow,
-        elevation: 2,
-        shadowColor: colorScheme.shadow.withValues(alpha: shadowAlpha),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        color: colorScheme.surface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: colorScheme.outlineVariant),
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
       ),
 
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: colorScheme.primary,
           foregroundColor: colorScheme.onPrimary,
-          elevation: 2,
-          shadowColor: colorScheme.shadow.withValues(alpha: shadowAlpha),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          elevation: 0,
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 15),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           textStyle: textTheme.labelLarge,
         ),
       ),
 
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
-          foregroundColor: colorScheme.primary,
-          side: BorderSide(color: colorScheme.outline),
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          foregroundColor: colorScheme.onSurface,
+          side: BorderSide(color: colorScheme.outlineVariant),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 13),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
           textStyle: textTheme.labelLarge,
         ),
       ),
@@ -141,8 +141,9 @@ class AppTheme {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: colorScheme.primary,
         foregroundColor: colorScheme.onPrimary,
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        elevation: 0,
+        highlightElevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
       ),
 
       chipTheme: ChipThemeData(

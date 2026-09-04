@@ -73,11 +73,11 @@ class OnboardingPreferencesScreen extends StatelessWidget {
                   Obx(() {
                     final granted = controller.notificationPermissionGranted.value;
                     if (granted == true) {
-                      return const Row(
+                      return Row(
                         children: [
-                          Icon(Icons.check_circle, color: Colors.green),
-                          SizedBox(width: 8),
-                          Text('Notifications enabled'),
+                          Icon(Icons.check_circle, color: Theme.of(context).colorScheme.primary),
+                          const SizedBox(width: 8),
+                          const Text('Notifications enabled'),
                         ],
                       );
                     }

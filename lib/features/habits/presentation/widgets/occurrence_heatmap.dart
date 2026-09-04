@@ -1,4 +1,5 @@
 import 'package:customer/core/domain/habit/habit_enums.dart';
+import 'package:customer/core/presentation/theme/theme_extensions.dart';
 import 'package:customer/features/habits/domain/entity/habit_occurrence.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -63,7 +64,7 @@ class _HeatmapCell extends StatelessWidget {
       return const SizedBox(width: 14, height: 14);
     }
 
-    final color = _colorFor(occurrence.state, theme);
+    final color = _colorFor(context, occurrence.state, theme);
     final label = occurrence.state == OccurrenceState.notScheduled
         ? '${DateFormat.yMMMd().format(occurrence.date.toDateTime())}: not scheduled'
         : '${DateFormat.yMMMd().format(occurrence.date.toDateTime())}: ${occurrence.state.name}';
@@ -85,14 +86,15 @@ class _HeatmapCell extends StatelessWidget {
     );
   }
 
-  Color _colorFor(OccurrenceState state, ThemeData theme) {
+  Color _colorFor(BuildContext context, OccurrenceState state, ThemeData theme) {
     switch (state) {
       case OccurrenceState.completed:
         return theme.colorScheme.primary;
       case OccurrenceState.partial:
-        return theme.colorScheme.tertiary;
+        return theme.colorScheme.secondary;
       case OccurrenceState.missed:
-        return theme.colorScheme.error.withValues(alpha: 0.55);
+        // Neutral, not red — a missed day is just "no data", never a scold.
+        return context.neutralMiss;
       case OccurrenceState.skipped:
         return theme.colorScheme.onSurfaceVariant.withValues(alpha: 0.35);
       case OccurrenceState.pending:

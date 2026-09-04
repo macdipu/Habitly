@@ -64,7 +64,7 @@ class SettingsScreen extends StatelessWidget {
                 const SizedBox(height: 8),
                 Obx(() => SegmentedButton<AppTimeFormat>(
                       segments: const [
-                        ButtonSegment(value: AppTimeFormat.system, label: Text('System')),
+                        ButtonSegment(value: AppTimeFormat.system, label: Text('Auto')),
                         ButtonSegment(value: AppTimeFormat.h12, label: Text('12h')),
                         ButtonSegment(value: AppTimeFormat.h24, label: Text('24h')),
                       ],
