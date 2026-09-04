@@ -1,4 +1,4 @@
-package com.onkur.customer
+package io.github.macdipu.habitly
 
 import io.flutter.embedding.android.FlutterActivity
 
