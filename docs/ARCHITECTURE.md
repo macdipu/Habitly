@@ -179,12 +179,12 @@ Follows BRD §20 phases, adapted to this repo. Status as of the last build pass
   fully replaced on every save (not historical data, no versioning needed).
   Archive/Delete deliberately stay on Habit Detail's menu, not duplicated
   on the Edit screen (BRD §S13 "destructive actions separated").
-- **Phase 3 — mostly done**: Habit Detail (S12, with a 90-day heatmap), Calendar
+- **Phase 3 — mostly done**: Habit Detail (S12, with a 90-day heatmap +
+  weekday-performance and weekly-trend charts, see §11 addendum below), Calendar
   month view (S14) aggregating all active habits (no per-habit filter yet), Day
   Detail (S15, historical check-in edit/undo/skip), Insights overview (S16, ranking
-  + most-consistent + 7/30/90d range). **Not done**: a dedicated per-habit Insights
-  screen (S17) beyond what Habit Detail already shows; weekday-performance/monthly
-  trend charts.
+  + most-consistent + 7/30/90d range). **Not done**: a dedicated separate per-habit
+  Insights screen (S17) — its charts landed on Habit Detail instead, see §11.
 - **Phase 4 — done**: `lib/services/backup/` — `BackupBundle` (spans multiple
   features' entities, so lives in `services/` not `core/domain`, same reasoning
   as `ReminderReconciler`) + `BackupCodec` (pure JSON encode/decode/checksum,
@@ -303,3 +303,60 @@ pipeline, no cert pinning on `ApiClient`, no crash reporting, no widget
 tests (only unit tests exist across the whole suite) — all pre-existing gaps
 already tracked in this file's "Known TODOs" equivalent in the root
 `CLAUDE.md`.
+
+## 12. Crash fix + Create Habit correctness pass, and S17 charts
+
+A UI/UX re-audit (scored the app 5/10, up from a prior redesign-only pass)
+found two real functional defects in Create Habit, plus a bug found while
+fixing them:
+
+1. **Crash on back-navigation from the Basics step** — `BasicsStep`'s name
+   `TextField` called `controller.currentStep.refresh()` on every keystroke
+   as a workaround to make the Next button reactive. That call forced the
+   `Obx` wrapping the *entire* `Stepper` (including the focused, actively-
+   being-typed-in name field) to rebuild synchronously from inside the
+   field's own `onChanged` — corrupting the element tree
+   (`'_dependents.isEmpty': is not true` on the next navigation). Fixed by
+   giving `HabitFormController` a dedicated `nameText` Rx kept in sync via
+   a `TextEditingController` listener, and scoping the Next/Save button's
+   reactivity to just that button (`Obx` around the `FilledButton` only),
+   not the whole Stepper.
+2. **Next button never enabled from typing the name alone** — same root
+   cause and same fix as #1.
+3. **Found while fixing #1/#2, not in the original audit: the Goal step
+   never appeared for Count/Duration habit types.** `needsGoalStep`
+   computed correctly on every rebuild (verified via logging), but
+   Flutter's `Stepper` did not reliably re-render when `steps.length`
+   changed via a normal widget update in this Flutter version — the step
+   was there in data, never on screen. Fixed with `key:
+   ValueKey(steps.length)` on the `Stepper` in both `CreateHabitScreen` and
+   `EditHabitScreen`, forcing a full remount instead of an incremental
+   update whenever a step is added or removed.
+
+Same pass also shipped: a "Manage habits" screen (Settings → Habits) with
+search + an Active/Archived toggle and a working Restore action —
+`getArchivedHabits()`/`RestoreHabitUseCase` existed with no UI caller
+before this; `quick_check_in_sheet.dart` redesigned to match the app's
+theme (was default Material); Habit Detail's Edit/Archive/Delete moved from
+an overflow menu to a visible bottom action row. A follow-up re-audit
+confirmed all of the above live on-device and scored the app 8/10.
+
+**S17 per-habit Insights charts** (the largest gap the re-audit flagged)
+landed on Habit Detail rather than a separate screen — two new pure
+calculators in `core/domain/habit/` (`WeekdayPerformanceCalculator`,
+`WeeklyTrendCalculator`, both unit-tested) feed a weekday-performance bar
+chart and a weekly-adherence trend line chart (`fl_chart`, already a
+dependency), rendered below the existing 90-day heatmap. Both calculators
+take `(date, state)` records rather than the feature layer's
+`HabitOccurrence` — `core/domain/` cannot import `features/` entities per
+this file's own layering rule, so callers map their occurrence list to
+records before calling in. Missing-data weekdays/weeks render neutral gray,
+never red, matching the app's "never shame a skipped day" rule elsewhere
+(the heatmap, Calendar). Verified live: the weekday chart correctly shows
+a full sage bar on a day with a real check-in and flat neutral bars on
+days with none; the trend chart correctly shows its "not enough weekly
+data yet" empty state until at least two populated weeks exist.
+
+Still outstanding from the re-audit, not attempted here: notification-tap
+deep link into the habit; Settings sub-screens (S21-S24) remain
+consolidated into one tab rather than the BRD's dedicated screens.
