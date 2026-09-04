@@ -38,6 +38,13 @@ class AppDatabase extends _$AppDatabase {
           // as a shortcut: that silently destroys user history.
         },
       );
+
+  /// Forces the lazy connection to actually open and run migrations, so a
+  /// DB init failure surfaces at splash (BRD §S01) instead of unpredictably
+  /// on whichever screen happens to run the first real query.
+  Future<void> ensureReady() async {
+    await customSelect('SELECT 1').get();
+  }
 }
 
 LazyDatabase _openConnection() {

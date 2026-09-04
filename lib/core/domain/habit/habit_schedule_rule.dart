@@ -60,6 +60,27 @@ class HabitScheduleRule {
         return n > 0 && diff % n == 0;
     }
   }
+
+  /// Whether [other] describes the same recurrence *pattern* — ignoring
+  /// timing fields (`startDate`/`endDate`/`effectiveFrom`/`anchorDate`).
+  /// Used by Edit Habit (S13) to decide whether an edit needs a new
+  /// append-only schedule row at all: an unrelated change (name, color,
+  /// goal) must never append a row that resets an `interval` habit's phase
+  /// (docs/SRS.md FR-13).
+  bool hasSameShapeAs(HabitScheduleRule other) {
+    if (mode != other.mode) return false;
+    switch (mode) {
+      case ScheduleMode.daily:
+        return true;
+      case ScheduleMode.weekdays:
+        return weekdays.difference(other.weekdays).isEmpty &&
+            other.weekdays.difference(weekdays).isEmpty;
+      case ScheduleMode.timesPerWeek:
+        return weeklyTarget == other.weeklyTarget;
+      case ScheduleMode.interval:
+        return intervalDays == other.intervalDays;
+    }
+  }
 }
 
 /// Resolves which [HabitScheduleRule] applies to a given date across a

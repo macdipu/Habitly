@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Habitly local reminders (docs/SRS.md FR-50..FR-54). No exact-alarm
+         permission is requested — scheduling uses inexactAllowWhileIdle. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
         android:label="Onkur Customer"
         android:name="${applicationName}"

@@ -77,6 +77,86 @@ void main() {
     });
   });
 
+  group('HabitScheduleRule.hasSameShapeAs', () {
+    test('daily rules always match regardless of timing fields', () {
+      final a = HabitScheduleRule(
+        mode: ScheduleMode.daily,
+        startDate: const LocalDate(2026, 1, 1),
+        effectiveFrom: const LocalDate(2026, 1, 1),
+      );
+      final b = HabitScheduleRule(
+        mode: ScheduleMode.daily,
+        startDate: const LocalDate(2026, 6, 1),
+        effectiveFrom: const LocalDate(2026, 6, 1),
+      );
+      expect(a.hasSameShapeAs(b), isTrue);
+    });
+
+    test('weekdays rules compare the day set, order-independent', () {
+      final a = HabitScheduleRule(
+        mode: ScheduleMode.weekdays,
+        weekdays: const {1, 3, 5},
+        startDate: const LocalDate(2026, 1, 1),
+        effectiveFrom: const LocalDate(2026, 1, 1),
+      );
+      final same = HabitScheduleRule(
+        mode: ScheduleMode.weekdays,
+        weekdays: const {5, 3, 1},
+        startDate: const LocalDate(2026, 3, 1),
+        effectiveFrom: const LocalDate(2026, 3, 1),
+      );
+      final different = HabitScheduleRule(
+        mode: ScheduleMode.weekdays,
+        weekdays: const {1, 3},
+        startDate: const LocalDate(2026, 1, 1),
+        effectiveFrom: const LocalDate(2026, 1, 1),
+      );
+      expect(a.hasSameShapeAs(same), isTrue);
+      expect(a.hasSameShapeAs(different), isFalse);
+    });
+
+    test('interval rules compare intervalDays only, not the anchor', () {
+      final a = HabitScheduleRule(
+        mode: ScheduleMode.interval,
+        intervalDays: 3,
+        anchorDate: const LocalDate(2026, 1, 1),
+        startDate: const LocalDate(2026, 1, 1),
+        effectiveFrom: const LocalDate(2026, 1, 1),
+      );
+      final sameIntervalDifferentAnchor = HabitScheduleRule(
+        mode: ScheduleMode.interval,
+        intervalDays: 3,
+        anchorDate: const LocalDate(2026, 5, 1),
+        startDate: const LocalDate(2026, 5, 1),
+        effectiveFrom: const LocalDate(2026, 5, 1),
+      );
+      final differentInterval = HabitScheduleRule(
+        mode: ScheduleMode.interval,
+        intervalDays: 4,
+        anchorDate: const LocalDate(2026, 1, 1),
+        startDate: const LocalDate(2026, 1, 1),
+        effectiveFrom: const LocalDate(2026, 1, 1),
+      );
+      expect(a.hasSameShapeAs(sameIntervalDifferentAnchor), isTrue);
+      expect(a.hasSameShapeAs(differentInterval), isFalse);
+    });
+
+    test('a mode change is always a shape change', () {
+      final daily = HabitScheduleRule(
+        mode: ScheduleMode.daily,
+        startDate: const LocalDate(2026, 1, 1),
+        effectiveFrom: const LocalDate(2026, 1, 1),
+      );
+      final weekdays = HabitScheduleRule(
+        mode: ScheduleMode.weekdays,
+        weekdays: const {1},
+        startDate: const LocalDate(2026, 1, 1),
+        effectiveFrom: const LocalDate(2026, 1, 1),
+      );
+      expect(daily.hasSameShapeAs(weekdays), isFalse);
+    });
+  });
+
   group('HabitScheduleTimeline', () {
     test('a schedule edit only affects occurrences on/after effectiveFrom', () {
       final original = HabitScheduleRule(

@@ -72,29 +72,60 @@ class _MonthGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final firstOfMonth = LocalDate(monthDate.year, monthDate.month, 1);
-    final leadingBlanks = firstOfMonth.weekday - 1; // Monday-first grid
-    final daysInMonth = DateTime.utc(monthDate.year, monthDate.month + 1, 0).day;
+    return Obx(() {
+      final firstOfMonth = LocalDate(monthDate.year, monthDate.month, 1);
+      // Blanks before the 1st so the grid's first column matches the
+      // user's start-of-week preference (BRD §S03/§16).
+      var leadingBlanks = firstOfMonth.weekday - controller.startOfWeekIsoDay.value;
+      if (leadingBlanks < 0) leadingBlanks += 7;
+      final daysInMonth = DateTime.utc(monthDate.year, monthDate.month + 1, 0).day;
 
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
-      itemCount: leadingBlanks + daysInMonth,
-      itemBuilder: (context, index) {
-        if (index < leadingBlanks) return const SizedBox.shrink();
-        final day = index - leadingBlanks + 1;
-        final date = LocalDate(monthDate.year, monthDate.month, day);
-        final status = controller.statuses[date] ?? CalendarDayStatus.none;
-        return _DayCell(
-          day: day,
-          status: status,
-          onTap: () async {
-            final changed = await Get.toNamed(AppRoutes.dayDetail, arguments: date);
-            if (changed == true) controller.load();
-          },
-        );
-      },
+      return Column(
+        children: [
+          _WeekdayHeader(startOfWeekIsoDay: controller.startOfWeekIsoDay.value),
+          GridView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7),
+            itemCount: leadingBlanks + daysInMonth,
+            itemBuilder: (context, index) {
+              if (index < leadingBlanks) return const SizedBox.shrink();
+              final day = index - leadingBlanks + 1;
+              final date = LocalDate(monthDate.year, monthDate.month, day);
+              final status = controller.statuses[date] ?? CalendarDayStatus.none;
+              return _DayCell(
+                day: day,
+                status: status,
+                onTap: () async {
+                  final changed = await Get.toNamed(AppRoutes.dayDetail, arguments: date);
+                  if (changed == true) controller.load();
+                },
+              );
+            },
+          ),
+        ],
+      );
+    });
+  }
+}
+
+class _WeekdayHeader extends StatelessWidget {
+  final int startOfWeekIsoDay;
+
+  const _WeekdayHeader({required this.startOfWeekIsoDay});
+
+  @override
+  Widget build(BuildContext context) {
+    const labels = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+    final ordered = List.generate(7, (i) => labels[(startOfWeekIsoDay - 1 + i) % 7]);
+    final style = Theme.of(context)
+        .textTheme
+        .labelSmall
+        ?.copyWith(color: Theme.of(context).colorScheme.onSurfaceVariant);
+    return Row(
+      children: ordered
+          .map((label) => Expanded(child: Center(child: Text(label, style: style))))
+          .toList(),
     );
   }
 }

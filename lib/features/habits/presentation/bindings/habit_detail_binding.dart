@@ -1,4 +1,5 @@
 import 'package:customer/features/habits/domain/repo/habit_repository.dart';
+import 'package:customer/services/notifications/reminder_reconciler.dart';
 import 'package:get/get.dart';
 
 import '../habit_detail/controller/habit_detail_controller.dart';
@@ -8,7 +9,7 @@ class HabitDetailBinding extends Bindings {
   void dependencies() {
     final habitId = Get.arguments as String;
     Get.lazyPut<HabitDetailController>(
-      () => HabitDetailController(Get.find<HabitRepository>(), habitId),
+      () => HabitDetailController(Get.find<HabitRepository>(), Get.find<ReminderReconciler>(), habitId),
     );
   }
 }

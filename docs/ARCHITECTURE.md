@@ -140,13 +140,43 @@ Follows BRD §20 phases, adapted to this repo. Status as of the last build pass
 - **Phase 0 — done**: dependencies, Drift schema + migrations, recurrence/streak/
   adherence/week-quota/calendar-aggregation engine + unit tests, theme/nav wiring,
   docs (this file, `SRS.md`, `DATA_MODEL.md`).
-- **Phase 1 — mostly done**: Today (empty + dashboard, check-in/undo/skip, quick-entry
-  sheet), Create Habit (Basics/Schedule/Goal/Review stepper), archive/delete wired
-  from Habit Detail. **Not done**: onboarding (S02/S03 — app currently boots
-  straight to the shell), Edit Habit (S13 — menu item shows a "coming soon"
-  snackbar).
-- **Phase 2 — not started**: reminders (S10), permission flow, notification
-  scheduling/reconciliation. Create Habit has no reminders step yet.
+- **Phase 1 — done**: Today (empty + dashboard, check-in/undo/skip, quick-entry
+  sheet), Create Habit (Basics/Schedule/Goal/Reminders/Review stepper),
+  archive/delete wired from Habit Detail, onboarding (S01–S03, see addendum
+  below), Edit Habit (S13, see addendum below).
+- **Phase 1 addendum — Onboarding (S01–S03) done**: `AppRoutes.splash` is now
+  `AppPages.initial` (was `appShell`). `SplashController` calls
+  `AppDatabase.ensureReady()` (a real `SELECT 1`) so a DB init failure
+  surfaces as a recoverable Retry screen at splash, never silently resets
+  the DB (FR-02). First-launch detection is a persisted
+  `AppSettingsRepository.isOnboardingComplete()` flag, set only when the
+  user finishes S03's Continue — force-quitting mid-onboarding re-shows it
+  next launch, which is correct. Start-of-week and time-format prefs
+  (new `AppSettingsRepository` methods, new `AppTimeFormat` enum) are set
+  here and editable again later from Settings. Start-of-week feeds the
+  Calendar month grid's first column (`CalendarController`); time-format
+  feeds `TimeFormatController.formatTime` (new controller, same
+  Get.put-in-`app.dart` pattern as `ThemeController`/`LocaleController`),
+  used wherever a stored 'HH:mm' reminder/quiet-hours time is displayed.
+  Known gap: an already-mounted Calendar tab doesn't live-refresh if
+  start-of-week changes in Settings mid-session (picks it up on next
+  load/launch) — documented in `SettingsController`, not silently broken.
+- **Phase 2 — done**: reminders (S10) in Create Habit, permission flow
+  (in-context request + non-blocking denial per FR-53), notification
+  scheduling/reconciliation (`HabitNotificationService` +
+  `ReminderReconciler`), quiet hours + master toggle in Settings (S22).
+  Scheduling is one-shot-next-occurrence + reconcile-on-open/mutation
+  (see file header of `core/domain/habit/reminder_scheduler.dart` for why —
+  not native daily/weekly OS repeat). Not done: no notification-tap deep
+  link into the habit (BRD §9).
+- **Phase 1 addendum — Edit Habit (S13) done**: `HabitFormController` (shared
+  by Create and Edit) + `HabitEntity.copyWith`'s `clearX` flags. Editing only
+  appends a new `HabitSchedule` row when the recurrence *pattern* actually
+  changed (`HabitScheduleRule.hasSameShapeAs`) — an unrelated edit (name,
+  color, goal) never resets an `interval` habit's phase. Reminders are
+  fully replaced on every save (not historical data, no versioning needed).
+  Archive/Delete deliberately stay on Habit Detail's menu, not duplicated
+  on the Edit screen (BRD §S13 "destructive actions separated").
 - **Phase 3 — mostly done**: Habit Detail (S12, with a 90-day heatmap), Calendar
   month view (S14) aggregating all active habits (no per-habit filter yet), Day
   Detail (S15, historical check-in edit/undo/skip), Insights overview (S16, ranking

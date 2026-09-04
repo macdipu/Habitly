@@ -7,6 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../../core/presentation/controllers/locale_controller.dart';
 import '../../core/presentation/controllers/theme_controller.dart';
+import '../../core/presentation/controllers/time_format_controller.dart';
 import '../../core/presentation/theme/app_theme.dart';
 import '../../res/routes/app_pages.dart';
 import '../../res/strings/app_translations.dart';
@@ -21,6 +22,15 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final ThemeController _themeController = Get.put(ThemeController());
   final LocaleController _localeController = Get.put(LocaleController());
+
+  @override
+  void initState() {
+    super.initState();
+    // Read by widgets via Get.find<TimeFormatController>() — no local
+    // reference needed here, unlike theme/locale which this widget itself
+    // consults directly below.
+    Get.put(TimeFormatController());
+  }
 
   @override
   Widget build(BuildContext context) {

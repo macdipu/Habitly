@@ -7,7 +7,11 @@ class AppRoutes {
   static const String resetPinSuccess = '/reset_pin_success';
 
   // Habitly
+  static const String splash = '/splash';
+  static const String onboardingWelcome = '/onboarding/welcome';
+  static const String onboardingPreferences = '/onboarding/preferences';
   static const String createHabit = '/habits/create';
   static const String habitDetail = '/habits/detail';
+  static const String editHabit = '/habits/edit';
   static const String dayDetail = '/calendar/day';
 }

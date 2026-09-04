@@ -7,6 +7,7 @@ import 'package:customer/features/habits/domain/usecase/archive_habit_use_case.d
 import 'package:customer/features/habits/domain/usecase/delete_habit_use_case.dart';
 import 'package:customer/features/habits/domain/usecase/get_habit_by_id_use_case.dart';
 import 'package:customer/features/habits/domain/usecase/get_habit_stats_use_case.dart';
+import 'package:customer/services/notifications/reminder_reconciler.dart';
 import 'package:get/get.dart';
 
 class HabitDetailController extends BaseController {
@@ -16,8 +17,9 @@ class HabitDetailController extends BaseController {
   final GetHabitStatsUseCase _getStats;
   final ArchiveHabitUseCase _archiveHabit;
   final DeleteHabitUseCase _deleteHabit;
+  final ReminderReconciler _reminderReconciler;
 
-  HabitDetailController(HabitRepository repository, this.habitId)
+  HabitDetailController(HabitRepository repository, this._reminderReconciler, this.habitId)
       : _getHabit = GetHabitByIdUseCase(repository),
         _getStats = GetHabitStatsUseCase(repository),
         _archiveHabit = ArchiveHabitUseCase(repository),
@@ -60,10 +62,17 @@ class HabitDetailController extends BaseController {
       action: () => _archiveHabit(habitId),
       onSuccess: (_) => success = true,
     );
+    // Archiving cancels future reminders while preserving history (BRD
+    // Core Rule "Archive") — reconcile sees the now-archived habit and
+    // cancels without rescheduling.
+    if (success) await _reminderReconciler.reconcileHabit(habitId);
     return success;
   }
 
   Future<bool> delete() async {
+    // Cancel while the habit's reminders are still readable, before the
+    // rows are gone (docs/SRS.md FR-51).
+    await _reminderReconciler.cancelHabit(habitId);
     var success = false;
     await doAction<void>(
       action: () => _deleteHabit(habitId),

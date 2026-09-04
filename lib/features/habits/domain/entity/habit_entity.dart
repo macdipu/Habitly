@@ -35,14 +35,23 @@ class HabitEntity {
 
   bool get isArchived => archivedAt != null;
 
+  /// `null` for a nullable field means "leave unchanged" — to actually
+  /// clear one (e.g. `unit`/`target` when Edit Habit switches a habit to
+  /// Binary), pass the matching `clearX: true` flag instead, the same way
+  /// [clearArchivedAt] already works for restore.
   HabitEntity copyWith({
     String? name,
+    HabitType? type,
     String? icon,
     int? color,
     String? description,
+    bool clearDescription = false,
     String? unit,
+    bool clearUnit = false,
     double? target,
+    bool clearTarget = false,
     GoalDirection? goalDirection,
+    bool clearGoalDirection = false,
     int? sortOrder,
     DateTime? updatedAt,
     DateTime? archivedAt,
@@ -51,13 +60,13 @@ class HabitEntity {
     return HabitEntity(
       id: id,
       name: name ?? this.name,
-      type: type,
+      type: type ?? this.type,
       icon: icon ?? this.icon,
       color: color ?? this.color,
-      description: description ?? this.description,
-      unit: unit ?? this.unit,
-      target: target ?? this.target,
-      goalDirection: goalDirection ?? this.goalDirection,
+      description: clearDescription ? null : (description ?? this.description),
+      unit: clearUnit ? null : (unit ?? this.unit),
+      target: clearTarget ? null : (target ?? this.target),
+      goalDirection: clearGoalDirection ? null : (goalDirection ?? this.goalDirection),
       sortOrder: sortOrder ?? this.sortOrder,
       createdAt: createdAt,
       updatedAt: updatedAt ?? this.updatedAt,

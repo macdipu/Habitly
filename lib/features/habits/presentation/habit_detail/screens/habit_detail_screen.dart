@@ -1,11 +1,12 @@
 import 'package:customer/features/habits/presentation/widgets/occurrence_heatmap.dart';
+import 'package:customer/res/routes/app_routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controller/habit_detail_controller.dart';
 
-/// S12 — full overview of one habit. Edit (S13) lands in a later pass
-/// (docs/ARCHITECTURE.md §9); Archive/Delete are wired end to end.
+/// S12 — full overview of one habit. Edit/Archive/Delete all wired end to
+/// end.
 class HabitDetailScreen extends StatelessWidget {
   const HabitDetailScreen({super.key});
 
@@ -100,9 +101,8 @@ class HabitDetailScreen extends StatelessWidget {
   ) async {
     switch (action) {
       case 'edit':
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Editing habits lands in a later update')),
-        );
+        final changed = await Get.toNamed(AppRoutes.editHabit, arguments: controller.habitId);
+        if (changed == true) controller.load();
         break;
       case 'archive':
         final confirmed = await showDialog<bool>(
