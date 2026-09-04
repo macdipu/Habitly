@@ -4,7 +4,9 @@ import 'package:get/get_navigation/src/routes/get_route.dart';
 import '../../app/shell/app_shell.dart';
 import '../../app/shell/app_shell_binding.dart';
 import '../../features/habits/presentation/bindings/create_habit_binding.dart';
+import '../../features/habits/presentation/bindings/habit_detail_binding.dart';
 import '../../features/habits/presentation/create_habit/screens/create_habit_screen.dart';
+import '../../features/habits/presentation/habit_detail/screens/habit_detail_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -27,6 +29,11 @@ class AppPages {
       name: AppRoutes.createHabit,
       page: () => const CreateHabitScreen(),
       binding: CreateHabitBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.habitDetail,
+      page: () => const HabitDetailScreen(),
+      binding: HabitDetailBinding(),
     ),
   ];
 }

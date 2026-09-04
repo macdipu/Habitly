@@ -102,11 +102,11 @@ class _TodayDashboard extends StatelessWidget {
             ),
           ),
           if (due.isNotEmpty) ...[
-            _SectionHeader('Due now'),
+            const _SectionHeader('Due now'),
             ...due.map((item) => _buildCard(context, item)),
           ],
           if (done.isNotEmpty) ...[
-            _SectionHeader('Completed'),
+            const _SectionHeader('Completed'),
             ...done.map((item) => _buildCard(context, item)),
           ],
         ],
@@ -117,7 +117,10 @@ class _TodayDashboard extends StatelessWidget {
   Widget _buildCard(BuildContext context, TodayHabitItem item) {
     return TodayHabitCard(
       item: item,
-      onTap: () {}, // Habit Detail (S12) — wired in a later pass.
+      onTap: () async {
+        final changed = await Get.toNamed(AppRoutes.habitDetail, arguments: item.habit.id);
+        if (changed == true) controller.loadToday();
+      },
       onStatusTap: () => _handleStatusTap(context, item),
       onUndo: () => controller.undo(item),
       onSkip: () => controller.skipToday(item),

@@ -1,3 +1,4 @@
+import 'package:customer/features/settings/presentation/screens/settings_screen.dart';
 import 'package:customer/features/today/presentation/screens/today_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,7 +18,7 @@ class AppShell extends StatelessWidget {
               TodayScreen(),
               _PlaceholderScreen(label: 'Calendar'),
               _PlaceholderScreen(label: 'Insights'),
-              _PlaceholderScreen(label: 'Settings'),
+              SettingsScreen(),
             ],
           )),
       bottomNavigationBar: Obx(
