@@ -39,6 +39,14 @@ class EditHabitScreen extends StatelessWidget {
                 // See CreateHabitScreen's identical key — Stepper does not
                 // reliably re-render a changed steps.length otherwise.
                 key: ValueKey(steps.length),
+                // See CreateHabitScreen's identical override — forces the
+                // active-step circle to stay sage in dark mode instead of
+                // Flutter's hardcoded clay/secondary swap.
+                connectorColor: WidgetStateProperty.resolveWith(
+                  (states) => states.contains(WidgetState.selected)
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
+                ),
                 currentStep: controller.currentStep.value,
                 onStepContinue: () {
                   final isLast =

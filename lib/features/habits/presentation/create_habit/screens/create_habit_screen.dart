@@ -24,6 +24,16 @@ class CreateHabitScreen extends StatelessWidget {
           // screen). Keying on the count forces a full remount instead of
           // an incremental update whenever a step is added/removed.
           key: ValueKey(steps.length),
+          // Flutter's Stepper hardcodes its active-step circle to
+          // `colorScheme.secondary` (clay) in dark theme and `.primary`
+          // (sage) in light — a framework quirk, not app config (see
+          // Stepper._circleColor). connectorColor is the one override point
+          // it honors, used here to force sage in both modes.
+          connectorColor: WidgetStateProperty.resolveWith(
+            (states) => states.contains(WidgetState.selected)
+                ? Theme.of(context).colorScheme.primary
+                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.38),
+          ),
           currentStep: controller.currentStep.value,
           onStepContinue: () {
             final isLast = controller.currentStep.value == steps.length - 1;
