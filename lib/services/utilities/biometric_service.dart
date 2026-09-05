@@ -55,7 +55,7 @@ class BiometricService {
         biometricOnly: biometricOnly,
       );
     } catch (e) {
-      if (kDebugMode) print('BiometricService.authenticate error: $e');
+      debugPrint('BiometricService.authenticate error: $e');
       return false;
     }
   }
