@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Habitly — Privacy Policy</title>
+<meta name="description" content="Habitly's privacy policy: no accounts, no cloud, no analytics, no ads. All habit data stays on your device.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%233E7A5A'/%3E%3Cpath d='M18 33l10 10 18-20' stroke='%23FDFBF8' stroke-width='6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F7F5F0;
+    --surface:#FFFFFF;
+    --surface-2:#F5F2EC;
+    --text:#2B2620;
+    --text-2:#6B6459;
+    --primary:#3E7A5A;
+    --on-primary:#FFFFFF;
+    --primary-container:#DCEEE3;
+    --outline:#E1DCD0;
+    --shadow: 0 1px 2px rgba(43,38,32,0.06), 0 8px 24px rgba(43,38,32,0.06);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#2C2924;
+      --surface:#34302B;
+      --surface-2:#3D3931;
+      --text:#ECE8E2;
+      --text-2:#A9A296;
+      --primary:#6FBE93;
+      --on-primary:#123322;
+      --primary-container:#234A38;
+      --outline:#3D3931;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Manrope',system-ui,sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2{
+    font-family:'Newsreader',Georgia,serif;
+    font-weight:600;
+    letter-spacing:-0.01em;
+    margin:0 0 8px;
+  }
+  a{color:var(--primary);}
+  .wrap{max-width:720px;margin:0 auto;padding:0 24px;}
+
+  header.nav{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 24px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:18px;text-decoration:none;color:var(--text);}
+  .nav a.gh{
+    font-size:14px;font-weight:600;color:var(--text-2);
+    text-decoration:none;
+  }
+  .nav a.gh:hover{color:var(--text);}
+
+  main{padding:24px 24px 72px;}
+  h1{font-size:clamp(28px,4vw,38px);}
+  .updated{color:var(--text-2);font-size:14px;margin-bottom:36px;}
+  section{margin-bottom:32px;}
+  h2{font-size:20px;margin-top:0;}
+  p,li{color:var(--text-2);font-size:15.5px;}
+  ul{padding-left:20px;margin:8px 0;}
+  li{margin-bottom:6px;}
+  .card{
+    background:var(--surface);border:1px solid var(--outline);
+    border-radius:14px;padding:20px 24px;box-shadow:var(--shadow);
+  }
+  code{
+    background:var(--surface-2);border-radius:4px;padding:2px 6px;font-size:0.9em;
+  }
+
+  footer{
+    border-top:1px solid var(--outline);
+    padding:28px 24px;
+    display:flex;align-items:center;justify-content:space-between;
+    flex-wrap:wrap;gap:12px;
+    color:var(--text-2);font-size:13.5px;
+  }
+  footer a{text-decoration:none;font-weight:600;}
+  footer a:hover{color:var(--text);}
+</style>
+</head>
+<body>
+
+<header class="nav wrap">
+  <a class="brand" href="index.html">
+    <svg width="28" height="28" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="#3E7A5A"/><path d="M18 33l10 10 18-20" stroke="#FDFBF8" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Habitly
+  </a>
+  <a class="gh" href="https://github.com/macdipu/Habitly" target="_blank" rel="noopener">GitHub</a>
+</header>
+
+<main class="wrap">
+  <h1>Privacy Policy</h1>
+  <p class="updated">Last updated: 2026-09-05</p>
+
+  <div class="card">
+    <section>
+      <h2>The short version</h2>
+      <p>Habitly does not collect, store, or transmit any personal data. It has no account system, no backend server, no analytics SDK, and no advertising SDK. Everything the app knows about your habits lives in a local database on your device and nowhere else.</p>
+    </section>
+
+    <section>
+      <h2>What Habitly stores, and where</h2>
+      <ul>
+        <li><strong>Habit and check-in data</strong> — stored only in a local SQLite database on your device. It is never uploaded anywhere.</li>
+        <li><strong>Backup files</strong> — if you use the app's export/backup feature, the file is written to a location you choose on your own device (or shared via a share sheet you control). Habitly does not upload backups to any server it operates.</li>
+        <li><strong>App preferences</strong> (theme, reminder settings, quiet hours) — stored locally on-device.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Permissions Habitly requests</h2>
+      <ul>
+        <li><strong>Notifications</strong> — to show local habit reminders you configure. No notification content is sent to or generated by a remote server.</li>
+        <li><strong>Receive boot completed</strong> — so scheduled reminders survive a device restart.</li>
+        <li><strong>Biometric / device credential</strong> (optional, if you enable an app lock) — authentication happens entirely through your device's operating system. Habitly never sees or stores your fingerprint, face data, or PIN.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Third parties</h2>
+      <p>Habitly does not integrate any analytics, crash-reporting, or advertising SDKs, and makes no network requests during normal use. There is nothing to opt out of because nothing is collected.</p>
+    </section>
+
+    <section>
+      <h2>Children's privacy</h2>
+      <p>Because Habitly collects no personal data from anyone, it does not knowingly collect personal data from children either.</p>
+    </section>
+
+    <section>
+      <h2>Changes to this policy</h2>
+      <p>If this policy ever changes — for example, if a future version of Habitly adds an optional cloud sync feature — this page will be updated first, with the "Last updated" date above reflecting the change, before that feature ships.</p>
+    </section>
+
+    <section>
+      <h2>Contact</h2>
+      <p>Questions about this policy or the app can be raised as an issue on <a href="https://github.com/macdipu/Habitly/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+    </section>
+  </div>
+</main>
+
+<footer class="wrap">
+  <span>&copy; 2026 Habitly. Open source under the repository's license.</span>
+  <a href="https://github.com/macdipu/Habitly" target="_blank" rel="noopener">github.com/macdipu/Habitly</a>
+</footer>
+
+</body>
+</html>
